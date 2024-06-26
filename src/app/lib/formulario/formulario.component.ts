@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../service/api.service';
-import { DataService } from '../../service/keep-data.service';
 import { FormsModule } from '@angular/forms';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FetchBackend } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { ApiSearchCriteria, ApiSearchGroup } from '../../interfaces';
+import {  ApiSearchGroup } from '../../interfaces';
 
 
 @Component({
