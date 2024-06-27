@@ -1,8 +1,8 @@
 <div class="container">
-    <div class="row bg-secondary-subtle p-4 mt-4 rounded rounded--lg">
+    <div class="row bg-secondary-subtle p-4 mt-4 rounded rounded--lg d-flex">
       <!-- Formulario a la izquierda -->
       <div class="col-md-4">
-        <form (submit)="onSubmit()">
+        <form (submit)="onSubmit(currentPage)">
           <div class="form-group mb-2">
             <label for="table_name">Nombre de tabla</label>
             <input type="text" class="form-control" id="table_name" [(ngModel)]="table_name" name="table_name" required>
@@ -22,8 +22,9 @@
                   {{item}}
                 </li>
               </ul>
-              <button (click)="createTableSchemaAndHeaders()">Crear</button>
+              
         </div>
+        <button class="btn btn-primary m-2 ms-0" (click)="createTableSchemaAndHeaders()">Crear</button>
       </div>
 
       <div class="col-md-2 mx-auto d-flex">
@@ -34,23 +35,21 @@
       <div class="col-md-6 bg-white rounded rounded--lg shadow-lg">
         <h3>Resultados</h3>
         <hr>
-        <div class="d-flex" *ngIf="responseData">
-          <ul >
-            <li style="width: 100%;" *ngFor="let key of fieldNames; let i = index ">
-              <button class="btn btn-secondary d-flex justify-end" (click)="showSelectedItem(i)" >agregar</button>
+        <div class="d-flex">
+          <ul class="w-100"  *ngIf="responseData">
+            <li class="d-flex justify-content-between align-items-center" *ngFor="let key of fieldNames; let i = index ">
               <p>{{key}}</p>
+              <button class="btn btn-secondary d-flex" (click)="showSelectedItem(i)" >Agregar</button>
             </li>
+            <app-paginator class="d-flex justify-content-center" [totalItems]="fieldNames.length" [itemsPerPage]="10" (pageChange)="onPageChange($event)" />
           </ul>
-          <!-- <div class="paginator">
-            <button class="paginator-button" (click)="goToFirst()"> </button>
-            <button class="paginator-button" (click)="goToPrevious()"></button>
-            <span class="paginator-info">Pág. <span id="currentPage"> {{currentPage}} </span> / <span id="totalPages"> {{ this.responseData.pages }} </span></span>
-            <button class="paginator-button" (click)="goToNext()"></button>
-            <button class="paginator-button" (click)="goToLast()"></button>
-        </div> -->
+          
       </div>
-      </div>
+
+      
+        
     </div>
+    
   </div>
   
 

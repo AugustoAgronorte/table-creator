@@ -3,13 +3,13 @@ import { ApiService } from '../../service/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {  ApiSearchResponse, ApiSearchGroup, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse} from '../../interfaces';
-
+import { PaginatorComponent } from '../paginator/paginator.component';
 
 
 @Component({
   selector: 'app-formulario',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, PaginatorComponent],
   templateUrl: './formulario.component.html',
   styleUrl: './formulario.component.css'
 })
@@ -27,13 +27,13 @@ export class FormularioComponent{
   fieldNames: string[] = [];
   currentPage: number = 1;
   id_table_api_schema: number = 1;
-  tableSchemaId?: number;
+  tableSchemaId!: number;
   
 
   constructor(private apiService: ApiService) { }
 
-  onSubmit(){
-    this.apiService.searchTableData<ApiSearchResponse>(this.api_path, this.table_name, this.currentPage, this.criteria_group ).subscribe(data =>
+  onSubmit(currentPage:number){
+    this.apiService.searchTableData<ApiSearchResponse>(this.api_path, this.table_name, currentPage=this.currentPage, this.criteria_group ).subscribe(data =>
       this.responseData = data);
       this.processData()
   };
@@ -62,11 +62,13 @@ export class FormularioComponent{
   }
 
   capitalizeFirstLetter(text: string): string {
-    return text.charAt(0).toUpperCase() + text.slice(1);
+    return text
+    .split(/(?=[A-Z])|[_\s]/)  // Divide por mayúsculas, guiones bajos o espacios
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())  // Capitaliza la primera letra de cada palabra
+    .join(' ');
   }
   
   createTableSchemaAndHeaders() {
-    
     const requestBody: ApiTableSchemaRequest = {
       table_key_name: "tabla_" + this.table_name,
       api_path: this.api_path + "/" + this.table_name,
@@ -74,64 +76,44 @@ export class FormularioComponent{
       editable: 1,  
       deletable: 0  
     };
-
+  
     // Paso 1: Crear la tabla schema
     this.apiService.createTableSchema(requestBody).subscribe(
       (schemaResponse: ApiTableSchemaResponse) => {
         this.tableSchemaId = schemaResponse.id; // Guarda el ID de la tabla schema creada
         console.log('TableSchema created with ID:', this.tableSchemaId);
-
-        // Paso 2: Crear los headers utilizando el ID de la tabla schema
+  
+        // Paso 2: Crear los headers uno por uno utilizando el ID de la tabla schema
         if (this.tableSchemaId) {
-          const headersArray = this.createTableHeadersArray(this.tableSchemaId);
-          this.apiService.createTableHeaders(headersArray).subscribe(
-            response => {
-              console.log('TableApiHeaders created successfully', response);
-            }
-          );
+          this.selectedItems.forEach(item => {
+            const headerRequest: ApiTableHeadersRequest = {
+              id_table_api_schema: this.tableSchemaId,
+              header_key: item,
+              display_name: this.capitalizeFirstLetter(item)
+            };
+  
+            this.apiService.createTableHeaders(headerRequest).subscribe(
+              response => {
+                console.log(`TableApiHeader created successfully for ${item}:`, response);
+              },
+              error => {
+                console.error(`Error creating TableApiHeader for ${item}:`, error);
+              }
+            );
+          });
         }
+      },
+      error => {
+        console.error('Error creating TableSchema:', error);
       }
     );
   }
 
-  createTableHeadersArray(id_table_api_schema: number): ApiTableHeadersRequest[] {
-    return this.selectedItems.map(item => ({
-      id_table_api_schema: this.id_table_api_schema,
-      header_key: item.toLowerCase(),
-      display_name: this.capitalizeFirstLetter(item)
-    }));
+  onPageChange(pageNumber: number) {
+    // Por ejemplo, puedes cargar los datos de la nueva página desde aquí
+    this.onSubmit(this.currentPage);
   }
 
+  
 }
-  // goToFirst() {
-  //   this.currentPage = 1
-  //   this.onSubmit()
-
-  // }
-
-  // goToPrevious() {
-
-  //   if (this.currentPage - 1 > 0) {
-  //     this.currentPage--
-  //     this.onSubmit()
-
-  //   }
-  // }
-
-  // goToNext() {
-
-  //   if (this.currentPage + 1 <= this.responseData.pages) {
-  //     this.currentPage++
-  //     this.onSubmit()
-
-  //   }
-  // }
-
-  // goToLast() {
-
-  //   if(this.currentPage = this.responseData.pages)
-  //     this.onSubmit()
-  // }
-
-
   

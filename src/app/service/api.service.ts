@@ -33,9 +33,10 @@ export class ApiService {
     return this.http.post<ApiTableSchemaResponse>(url, requestBody, { headers: { 'Authorization': 'aa' } });
   }
 
-  createTableHeaders(headers: ApiTableHeadersRequest[]): Observable<any> {
+  createTableHeaders(headers: ApiTableHeadersRequest): Observable<any> {
     const url = `${this.apiUrl}/table_api_headers/create`;
-    return this.http.post<any>(url, headers, { headers: { 'Authorization': 'aa' } });
+    console.log('BODY',headers)
+    return this.http.post<any>(url, headers);
   }
 
 }

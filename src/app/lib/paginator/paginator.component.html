@@ -1,0 +1,6 @@
+<div class="paginator">
+    <button class="paginator-button" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+    <span class="paginator-info">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button class="paginator-button" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+</div>
+  
