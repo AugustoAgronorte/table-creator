@@ -23,7 +23,7 @@ export class FormularioComponent{
     group_list: []
   }
   
-
+  selectedItems: any[] = [];
   responseData?:ApiSearchResponse;
   fieldNames: string[] = [];
   
@@ -43,6 +43,21 @@ export class FormularioComponent{
     }
   }
 
+  showSelectedItem(index: number) {
+    const selectedItem = this.fieldNames[index];
+    if (!this.selectedItems.includes(selectedItem)) 
+      this.selectedItems.push(selectedItem);
+  }
 
+  selectAll() {
+    if (this.fieldNames) {
+      this.fieldNames.forEach(item => {
+        if (!this.selectedItems.includes(item)) {
+          this.selectedItems.push(item);
+        }
+      });
+    }
+  }
+  
 }
   

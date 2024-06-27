@@ -17,16 +17,16 @@
         <div class="bg-white rounded rounded--lg mt-4 shadow-lg">
             <h3 class="p-2 ">Selección</h3>
             <hr>
-            <!-- <ul class="list-group">
-                <li *ngFor="let seleccion of seleccionados" class="list-group-item">
-                  selecciooon
+            <ul class="list-group">
+                <li *ngFor="let item of selectedItems" class="list-group-item">
+                  {{item}}
                 </li>
-              </ul> -->
+              </ul>
         </div>
       </div>
 
       <div class="col-md-2 mx-auto d-flex">
-        <button class="btn btn-warning my-auto mx-auto"> Seleccionar todo</button>
+        <button (click)="selectAll()" class="btn btn-warning my-auto mx-auto"> Seleccionar todo</button>
       </div>
      
 
@@ -35,7 +35,8 @@
         <hr>
         <div *ngIf="responseData">
           <ul >
-            <li *ngFor="let key of fieldNames">
+            <li *ngFor="let key of fieldNames; let i = index ">
+              <button (click)="showSelectedItem(i)" >agregar</button>
               <p>{{key}}</p>
             </li>
           </ul>
