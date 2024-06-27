@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiSearchResponse, ApiSearchGroup, ApiSearchRequest } from '../interfaces';
+import { ApiSearchResponse, ApiSearchGroup, ApiSearchRequest, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse } from '../interfaces';
 
 
 
@@ -27,4 +27,15 @@ export class ApiService {
     
     return this.http.post<ApiSearchResponse>(url, requestData, { headers :{'Authorization': `aa` }});
   }
+
+  createTableSchema(requestBody: ApiTableSchemaRequest): Observable<ApiTableSchemaResponse> {
+    const url = `${this.apiUrl}/table_api_schema/create`;
+    return this.http.post<ApiTableSchemaResponse>(url, requestBody, { headers: { 'Authorization': 'aa' } });
+  }
+
+  createTableHeaders(headers: ApiTableHeadersRequest[]): Observable<any> {
+    const url = `${this.apiUrl}/table_api_headers/create`;
+    return this.http.post<any>(url, headers, { headers: { 'Authorization': 'aa' } });
+  }
+
 }

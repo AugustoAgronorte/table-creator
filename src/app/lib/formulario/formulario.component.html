@@ -22,6 +22,7 @@
                   {{item}}
                 </li>
               </ul>
+              <button (click)="createTableSchemaAndHeaders()">Crear</button>
         </div>
       </div>
 
@@ -33,13 +34,20 @@
       <div class="col-md-6 bg-white rounded rounded--lg shadow-lg">
         <h3>Resultados</h3>
         <hr>
-        <div *ngIf="responseData">
+        <div class="d-flex" *ngIf="responseData">
           <ul >
-            <li *ngFor="let key of fieldNames; let i = index ">
-              <button (click)="showSelectedItem(i)" >agregar</button>
+            <li style="width: 100%;" *ngFor="let key of fieldNames; let i = index ">
+              <button class="btn btn-secondary d-flex justify-end" (click)="showSelectedItem(i)" >agregar</button>
               <p>{{key}}</p>
             </li>
           </ul>
+          <!-- <div class="paginator">
+            <button class="paginator-button" (click)="goToFirst()"> </button>
+            <button class="paginator-button" (click)="goToPrevious()"></button>
+            <span class="paginator-info">Pág. <span id="currentPage"> {{currentPage}} </span> / <span id="totalPages"> {{ this.responseData.pages }} </span></span>
+            <button class="paginator-button" (click)="goToNext()"></button>
+            <button class="paginator-button" (click)="goToLast()"></button>
+        </div> -->
       </div>
       </div>
     </div>
