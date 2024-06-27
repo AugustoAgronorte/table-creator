@@ -19,6 +19,7 @@ export class FormularioComponent{
   api_path: string = ''; // Segmento de la URL de la API después de /api
   table_name: string = ''; // Nombre de la tabla
   criteria_group:ApiSearchGroup = {
+    logic_operator: "",
     group_list: []
   }
   
@@ -105,6 +106,7 @@ export class FormularioComponent{
               response => {
                 console.log(`TableApiHeader created successfully for ${item}:`, response);
                 this.showAlertMessage()
+                this.clearAll()
               },
               error => {
                 console.error(`Error creating TableApiHeader for ${item}:`, error);
@@ -146,6 +148,11 @@ export class FormularioComponent{
     setTimeout(() => {
       this.showAlert = false;
     }, 2000); // Ocultar después de 2000 milisegundos (2 segundos)
+  }
+
+  clearAll(){
+    this.fieldNames = [],
+    this.selectedItems = []
   }
 
 }

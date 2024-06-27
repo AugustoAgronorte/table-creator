@@ -13,6 +13,7 @@ export interface BaseApiSearchGroup {
   
   // ApiSearchGroupSerializer
 export interface ApiSearchGroup {
+    logic_operator:string
     group_list: BaseApiSearchGroup[];
 }
 
