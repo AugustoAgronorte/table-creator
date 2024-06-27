@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../service/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import {  ApiSearchGroup } from '../../interfaces';
+import {  ApiSearchResponse, ApiSearchGroup } from '../../interfaces';
+
 
 
 @Component({
@@ -12,6 +13,7 @@ import {  ApiSearchGroup } from '../../interfaces';
   templateUrl: './formulario.component.html',
   styleUrl: './formulario.component.css'
 })
+
 export class FormularioComponent{
 
   api_path: string = ''; // Segmento de la URL de la API después de /api
@@ -22,14 +24,24 @@ export class FormularioComponent{
   }
   
 
-  responseData = {};
+  responseData?:ApiSearchResponse;
+  fieldNames: string[] = [];
+  
 
   constructor(private apiService: ApiService) { }
 
   onSubmit(){
-    this.apiService.searchTableData(this.api_path, this.table_name,this.page, this.criteria_group ).subscribe(data =>
+    this.apiService.searchTableData<ApiSearchResponse>(this.api_path, this.table_name,this.page, this.criteria_group ).subscribe(data =>
       this.responseData = data);
+      this.processData()
   };
+
+  processData() {
+    if (this.responseData && this.responseData.results && this.responseData.results.length > 0) {
+      this.fieldNames = Object.keys(this.responseData.results[0]);
+      console.log(this.fieldNames);
+    }
+  }
 
 
 }

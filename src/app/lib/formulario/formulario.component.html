@@ -2,7 +2,7 @@
     <div class="row bg-secondary-subtle p-4 mt-4 rounded rounded--lg">
       <!-- Formulario a la izquierda -->
       <div class="col-md-4">
-        <form>
+        <form (submit)="onSubmit()">
           <div class="form-group mb-2">
             <label for="table_name">Nombre de tabla</label>
             <input type="text" class="form-control" id="table_name" [(ngModel)]="table_name" name="table_name" required>
@@ -11,7 +11,7 @@
             <label for="api_path">Path de la api</label>
             <input type="text" class="form-control" id="api_path" [(ngModel)]="api_path" name="api_path" required>
           </div>
-          <button type="submit" (click)="onSubmit()"  class="btn btn-primary">Buscar</button>
+          <button type="submit"  class="btn btn-primary">Buscar</button>
         </form>
 
         <div class="bg-white rounded rounded--lg mt-4 shadow-lg">
@@ -33,11 +33,13 @@
       <div class="col-md-6 bg-white rounded rounded--lg shadow-lg">
         <h3>Resultados</h3>
         <hr>
-        <!-- <ul class="list-group">
-          <li *ngFor="let item of this.responseData.results[0]">
-            {{item}}
-          </li>
-        </ul> -->
+        <div *ngIf="responseData">
+          <ul >
+            <li *ngFor="let key of fieldNames">
+              <p>{{key}}</p>
+            </li>
+          </ul>
+      </div>
       </div>
     </div>
   </div>

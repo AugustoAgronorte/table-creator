@@ -19,4 +19,13 @@ export interface ApiSearchCriteria {
 export interface ApiSearchRequest {
     page: number;
     criteria_group: ApiSearchGroup;
-  }
+}
+
+export interface ApiSearchResponse{
+  count: number,
+  next: string,
+  previous: string,
+  page_size: number,
+  pages: number,
+  results:  { [key: string]: any }[];
+}
