@@ -3,13 +3,13 @@ import { ApiService } from '../../service/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {  ApiSearchResponse, ApiSearchGroup, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse} from '../../interfaces';
-import { PaginatorComponent } from '../paginator/paginator.component';
+
 
 
 @Component({
   selector: 'app-formulario',
   standalone: true,
-  imports: [FormsModule, CommonModule, PaginatorComponent],
+  imports: [FormsModule, CommonModule],
   templateUrl: './formulario.component.html',
   styleUrl: './formulario.component.css'
 })
@@ -28,20 +28,29 @@ export class FormularioComponent{
   currentPage: number = 1;
   id_table_api_schema: number = 1;
   tableSchemaId!: number;
+  itemsPerPage:number = 10;
+  showAlert:boolean = false;
   
 
   constructor(private apiService: ApiService) { }
 
-  onSubmit(currentPage:number){
-    this.apiService.searchTableData<ApiSearchResponse>(this.api_path, this.table_name, currentPage=this.currentPage, this.criteria_group ).subscribe(data =>
-      this.responseData = data);
-      this.processData()
-  };
-
+  onSubmit(currentPage: number) {
+    this.apiService.searchTableData<ApiSearchResponse>(
+      this.api_path,
+      this.table_name,
+      currentPage,
+      this.criteria_group
+    ).subscribe(data => {
+      this.responseData = data;
+      this.processData();
+    });
+  }
+  
   processData() {
     if (this.responseData && this.responseData.results && this.responseData.results.length > 0) {
-      this.fieldNames = Object.keys(this.responseData.results[0]);
-      console.log(this.fieldNames);
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      this.fieldNames = Object.keys(this.responseData.results[0]).slice(startIndex, endIndex);
     }
   }
 
@@ -52,8 +61,8 @@ export class FormularioComponent{
   }
 
   selectAll() {
-    if (this.fieldNames) {
-      this.fieldNames.forEach(item => {
+    if (Object.keys(this.responseData.results[0])) {
+      Object.keys(this.responseData.results[0]).forEach(item => {
         if (!this.selectedItems.includes(item)) {
           this.selectedItems.push(item);
         }
@@ -95,6 +104,7 @@ export class FormularioComponent{
             this.apiService.createTableHeaders(headerRequest).subscribe(
               response => {
                 console.log(`TableApiHeader created successfully for ${item}:`, response);
+                this.showAlertMessage()
               },
               error => {
                 console.error(`Error creating TableApiHeader for ${item}:`, error);
@@ -109,11 +119,34 @@ export class FormularioComponent{
     );
   }
 
-  onPageChange(pageNumber: number) {
-    // Por ejemplo, puedes cargar los datos de la nueva página desde aquí
-    this.onSubmit(this.currentPage);
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.onSubmit(this.currentPage);
+    }
+  }
+  
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.onSubmit(this.currentPage);
+    }
+  }
+  
+  get totalPages(): number {
+    if (this.responseData && this.responseData.results && this.responseData.results.length > 0) {
+      return Math.ceil(Object.keys(this.responseData.results[0]).length / this.itemsPerPage);
+    } else {
+      return 0; // Manejar el caso cuando no hay resultados o responseData no está definido
+    }
   }
 
-  
+  showAlertMessage() {
+    this.showAlert = true;
+    setTimeout(() => {
+      this.showAlert = false;
+    }, 2000); // Ocultar después de 2000 milisegundos (2 segundos)
+  }
+
 }
   

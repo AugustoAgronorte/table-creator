@@ -1,3 +1,12 @@
 .btn-secondary:hover{
     background-color: green;
 }
+.alert-container {
+    position: fixed;
+    top: 20px; /* Ajusta la posición desde la parte superior según necesites */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999; /* Asegura que tenga un índice z alto para estar por encima de otros elementos */
+    width: 100%;
+    max-width: 400px; /* Ancho máximo del alerta */
+  }
