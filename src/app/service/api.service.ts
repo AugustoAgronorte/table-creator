@@ -39,4 +39,27 @@ export class ApiService {
     return this.http.post<any>(url, headers);
   }
 
+  makeRequest(method: string, url: string, params: any = null, body: any = null): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'aa'
+    });
+
+    if (method.toUpperCase() === 'GET') {
+      let httpParams = new HttpParams();
+      if (params) {
+        for (const key in params) {
+          if (params.hasOwnProperty(key)) {
+            httpParams = httpParams.set(key, params[key]);
+          }
+        }
+      }
+      return this.http.get(url, { headers, params: httpParams });
+    } else if (method.toUpperCase() === 'POST') {
+      return this.http.post(url, body, { headers });
+    } else {
+      throw new Error('Unsupported request method');
+    }
+  }
+
 }

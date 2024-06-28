@@ -3,13 +3,13 @@ import { ApiService } from '../../service/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {  ApiSearchResponse, ApiSearchGroup, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse} from '../../interfaces';
-
+import { GeneralFormComponent } from '../general-form/general-form.component';
 
 
 @Component({
   selector: 'app-formulario',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, GeneralFormComponent],
   templateUrl: './formulario.component.html',
   styleUrl: './formulario.component.css'
 })

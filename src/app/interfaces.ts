@@ -48,3 +48,25 @@ export interface ApiTableSchemaRequest {
 export interface ApiTableSchemaResponse {
   id: number; // Asegúrate de que el objeto de respuesta incluya el ID
 }
+
+export interface ApiDefinitionInterface{      
+  method:string;    
+  serializer:string;    
+  description:string;    
+  authenticatable:number;    
+  url_list:string;    
+  url_path:string;    
+  fun_definition:string;
+  apiParameters: ApiParametersInterface[];
+}
+
+export interface ApiParametersInterface{     
+    id_api_definition:number;    
+    field:string;    
+    required:number;    
+    id_parameter_type:number;    
+    data_type:string;    
+    default_value:string;    
+    body:number;    
+    in_response:number;
+}

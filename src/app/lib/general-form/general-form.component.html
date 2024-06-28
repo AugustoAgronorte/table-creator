@@ -1,0 +1,180 @@
+<div class="row bg-secondary-subtle p-4 mt-4 rounded rounded--lg d-flex mb-4 justify-content-between">
+    <div class="col-md-6">
+        <form [formGroup]="apiForm" (ngSubmit)="onSubmit()">
+            <h3>ApiDefinition</h3>
+            <hr>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="nameSerializer">Nombre serializer:</label>
+                        <input id="nameSerializer" class="form-control shadow-lg" formControlName="nameSerializer"
+                            type="text" required placeholder="ApiSearch" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="pathapi">Path:</label>
+                        <input id="pathapi" class="form-control shadow-lg" formControlName="pathapi" type="text" required
+                            placeholder="/api/search/<str:table_param>" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="description">Descripción:</label>
+                        <input id="description" class="form-control shadow-lg" formControlName="description" type="text"
+                            required placeholder="Api general de búsqueda" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="url_list">Url_list:</label>
+                        <input id="url_list" class="form-control shadow-lg" formControlName="url_list" type="text"
+                            required placeholder="urls_api_globals" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="def_fun">Definición de función:</label>
+                        <input id="def_fun" class="form-control shadow-lg" formControlName="def_fun" type="text"
+                            required placeholder="search_api" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="method">Metodo HTTP:</label>
+                        <select id="method" class="form-control shadow-lg" formControlName="method" type="text"
+                            required placeholder="search_api">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="OBJECT">OBJECT</option>
+                        </select>
+                    </div>
+                </div>
+
+                
+                <!-- <div class="col-md-6">
+            <div class="form-group mb-2">
+              <label for="method">Método HTTP:</label>
+              <select class="form-control shadow-lg" id="method" formControlName="method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="OBJECT">OBJECT</option>
+              </select>
+            </div>
+          </div> -->
+            </div>
+
+            <div class="col-md-6 d-flex align-items-center">
+                <div class="form-group mb-2">
+                    <label class="form-check-label" for="autorizable">Autorizable</label>
+                    <div class="form-check form-switch pb-2">
+                        <input class="form-check-input" type="checkbox" formControlName="autorizable" id="autorizable">
+                    </div>
+                </div>
+            </div>
+
+<!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+            <h3 class="mt-4">ApiParameter</h3>
+            <hr>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="campo">Campo:</label>
+                        <input id="campo" class="form-control shadow-lg" formControlName="campo"
+                            type="text" required placeholder="ApiSearch" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="idParametertype">Tipo Parámetro:</label>
+                        <select id="idParametertype" class="form-control shadow-lg" formControlName="idParametertype" type="text"
+                            required placeholder="search_api">
+                            <option value="1">Primitivo</option>
+                            <option value="2">Objeto</option>
+                            <option value="3">Modelo</option>
+                            <option value="4">Lista</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="parameterDatatype">Tipo de datos del parámetro</label>
+                        <select id="parameterDatatype" class="form-control shadow-lg" formControlName="parameterDatatype" type="text" required
+                            placeholder="search_api">
+                            <option value="INTEGER">Integer</option>
+                            <option value="DOUBLE">Double</option>
+                            <option value="CHAR">Char</option>
+                            <option value="BOOLEAN">Boolean</option>
+                            <option value="OBJECT">Objeto</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                        <label for="isResponse">¿Response - Request?</label>
+                        <select id="isResponse" class="form-control shadow-lg" formControlName="isResponse" type="text"
+                            required placeholder="search_api">
+                            <option value="1">Response</option>
+                            <option value="0">Request</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="form-group mb-2">
+                        <label class="form-check-label" for="required">¿Requerido?</label>
+                        <div class="form-check form-switch pb-2">
+                            <input class="form-check-input" type="checkbox" formControlName="required" id="required">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="form-group mb-2">
+                        <label class="form-check-label" for="isBody">¿En el body?</label>
+                        <div class="form-check form-switch pb-2">
+                            <input class="form-check-input" type="checkbox" formControlName="isBody" id="isBody">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            
+            <button type="submit" class="btn btn-primary">Añadir</button>
+        </form>
+    </div>
+
+    <!-- <div *ngIf="response"> -->
+    <div class="col-md-6 bg-white rounded rounded--lg shadow-lg" style=" min-height: 565px;">
+        <h3>Definiciones añadidas</h3><hr>
+        <div class="d-flex flex-column" style="height: 100%;">
+            <!-- <ul class="w-100" style="max-height: 460px; min-height: 440px;" *ngIf="responseData">
+            <li class="d-flex justify-content-between align-items-center pb-1" *ngFor="let key of fieldNames; let i = index ">
+            <p>{{key}}</p>
+            <button class="btn btn-secondary d-flex" (click)="showSelectedItem(i)" >Agregar</button>
+            </li>
+        </ul> -->
+        </div>
+    </div>

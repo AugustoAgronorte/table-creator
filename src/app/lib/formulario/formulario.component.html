@@ -1,5 +1,7 @@
 <div class="container">
-    <div class="row bg-secondary-subtle p-4 mt-4 rounded rounded--lg d-flex">
+    <div class="row bg-secondary-subtle p-4 mt-4 rounded rounded--lg d-flex mb-4">
+      <h2>FORMULARIO ESPECIFICO DE CREACION DE TABLE-SCHEMA Y TABLE-HEADERS</h2>
+      <hr>
 
       <div class="alert alert-container" *ngIf="showAlert">
         <div class="alert alert-info mt-3">
@@ -60,7 +62,14 @@
             <button class="btn btn-primary" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
         </div>          
       </div>
-     
+
+    </div>
+
+    <h2></h2>
+    <hr>
+
+    <div class="col-md-12">
+      <app-general-form></app-general-form>
     </div>
     
   </div>
