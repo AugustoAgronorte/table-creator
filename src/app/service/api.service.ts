@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiSearchResponse, ApiSearchGroup, ApiSearchRequest, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse } from '../interfaces';
+import { ApiSearchResponse, ApiSearchGroup, ApiSearchRequest, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse, ApiDefinitionInterface, ApiParametersInterface } from '../interfaces';
 
 
 
@@ -39,27 +39,14 @@ export class ApiService {
     return this.http.post<any>(url, headers);
   }
 
-  makeRequest(method: string, url: string, params: any = null, body: any = null): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'aa'
-    });
+ createApiDefinition(requestBody: ApiDefinitionInterface): Observable<any>{
+  const url = `${this.apiUrl}/api_definition/create`;
+  return this.http.post<any>(url, requestBody, {headers:{ 'Authorization': 'aa' }} )
+ }
 
-    if (method.toUpperCase() === 'GET') {
-      let httpParams = new HttpParams();
-      if (params) {
-        for (const key in params) {
-          if (params.hasOwnProperty(key)) {
-            httpParams = httpParams.set(key, params[key]);
-          }
-        }
-      }
-      return this.http.get(url, { headers, params: httpParams });
-    } else if (method.toUpperCase() === 'POST') {
-      return this.http.post(url, body, { headers });
-    } else {
-      throw new Error('Unsupported request method');
-    }
-  }
+ createApiParameters(requestBody: ApiParametersInterface): Observable<any>{
+  const url = `${this.apiUrl}/api_parameters/create`;
+  return this.http.post<any>(url, requestBody, {headers:{'Authorization': `aa` }})
+ }
 
 }

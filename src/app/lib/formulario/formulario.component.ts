@@ -114,9 +114,6 @@ export class FormularioComponent{
             );
           });
         }
-      },
-      error => {
-        console.error('Error creating TableSchema:', error);
       }
     );
   }

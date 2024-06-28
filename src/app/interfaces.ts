@@ -49,7 +49,7 @@ export interface ApiTableSchemaResponse {
   id: number; // Asegúrate de que el objeto de respuesta incluya el ID
 }
 
-export interface ApiDefinitionInterface{      
+export interface ApiDefinitionInterface{  
   method:string;    
   serializer:string;    
   description:string;    
@@ -60,7 +60,7 @@ export interface ApiDefinitionInterface{
   apiParameters: ApiParametersInterface[];
 }
 
-export interface ApiParametersInterface{     
+export interface ApiParametersInterface{
     id_api_definition:number;    
     field:string;    
     required:number;    
@@ -69,4 +69,12 @@ export interface ApiParametersInterface{
     default_value:string;    
     body:number;    
     in_response:number;
+}
+
+export interface ApiDefinitionResponse {
+  id: number; // Asegúrate de que el objeto de respuesta incluya el ID
+}
+
+export interface ApiParametersResponse {
+  id: number; // Asegúrate de que el objeto de respuesta incluya el ID
 }
