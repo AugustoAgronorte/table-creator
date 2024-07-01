@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiSearchResponse, ApiSearchGroup, ApiSearchRequest, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse, ApiDefinitionInterface, ApiParametersInterface } from '../interfaces';
+import { ApiSearchResponse, ApiSearchGroup, ApiSearchRequest, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse, ApiDefinitionInterface, ApiParametersInterface, ApiDefinitionResponse, ApiParametersResponse } from '../interfaces';
+import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 
 
 
@@ -48,5 +49,43 @@ export class ApiService {
   const url = `${this.apiUrl}/api_parameters/create`;
   return this.http.post<any>(url, requestBody, {headers:{'Authorization': `aa` }})
  }
+
+  getApiDefinition(idApiDef?: number): Observable<ApiDefinitionResponse | ApiDefinitionResponse[]> {
+    let url: string = `${this.apiUrl}/api_definition/`;  // URL por defecto
+
+    if (idApiDef) {
+      url = `${this.apiUrl}/api_definition/${idApiDef}`;
+      return this.http.get<ApiDefinitionResponse>(url) // Si se proporciona un ID específico
+    }
+
+    return this.http.get<ApiDefinitionResponse[]>(url);
+  }
+
+  getApiParameters(idApiDefSearch?:number):Observable<ApiParametersResponse[]>{
+    let url = `${this.apiUrl}/api_parameters/`;
+
+    if(idApiDefSearch){
+      url = `${this.apiUrl}/api_parameters/?id_api_definition=${idApiDefSearch}`;
+    }
+
+    return this.http.get<ApiParametersResponse[]>(url);
+  }
+
+  deleteApiDef(id?:number):Observable<any>{
+    const url = `${this.apiUrl}/api_definition/${id}/delete`
+
+    return this.http.delete<any>(url);
+  }
+
+  deleteApiParams(id?:number):Observable<any>{
+    const url = `${this.apiUrl}/api_parameters/${id}/delete`
+
+    return this.http.delete<any>(url);
+  }
+
+   patchApiDef(id: number, partialData: Partial<ApiDefinitionResponse>): Observable<any> {
+    const url = `${this.apiUrl}/api_definition/${id}`;
+    return this.http.patch(url, partialData);
+  }
 
 }

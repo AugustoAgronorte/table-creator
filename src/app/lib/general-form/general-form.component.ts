@@ -3,113 +3,99 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ApiService } from '../../service/api.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ApiDefinitionInterface, ApiParametersInterface } from '../../interfaces';
+import { ApiDefinitionInterface, ApiDefinitionResponse, ApiParametersInterface, ApiParametersResponse } from '../../interfaces';
+import { ApiCreatorComponent } from '../api-creator/api-creator.component';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-general-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, ApiCreatorComponent],
   templateUrl: './general-form.component.html',
   styleUrl: './general-form.component.css'
 })
 export class GeneralFormComponent {
-  apiDefinitionForm: FormGroup;
-  apiParameterForm: FormGroup;
-  apidefinitions: ApiDefinitionInterface[] = [];
-  apiParameters: ApiParametersInterface[] = [];
-  selectedApiDefinitionId: number = 0;
-  idparameter:number = 1;
-  isactive:boolean = false
-  default_value:string = '0'
+  apiGeneralForm:FormGroup;
+  idApiDefSearch:number = 0;
+  ResponseapiDefinitions: ApiDefinitionResponse[] = [];
+  ResponseSingleApiDefinition: ApiDefinitionResponse | null = null;
+  createdActive:boolean = false;
+  resultsapis:boolean = true
+  isActiveResults:boolean = false;
+  ResponseApiParams: ApiParametersResponse[] = [];
   showAlert:boolean = false;
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
-    this.apiDefinitionForm = this.fb.group({
-      method: ['', Validators.required],
-      serializer: ['', Validators.required],
-      description: ['', Validators.required],
-      authenticatable: [false],
-      url_list: ['', Validators.required],
-      url_path: ['', Validators.required],
-      fun_definition: ['', Validators.required]
-    });
-
-    this.apiParameterForm = this.fb.group({
-      field: ['', Validators.required],
-      id_parameter_type: [0, Validators.required],
-      data_type: ['', Validators.required],
-      default_value: [''],
-      inBody: [false],
-      in_response: [false],
-      required: [false]
+    this.apiGeneralForm = this.fb.group({
+      idApiDefSearch: ['', Validators.required], // Ajusta el nombre aquí según tu formulario
     });
   }
 
-  onSubmitApiDefinition() {
-    const formData = this.apiDefinitionForm.value;
-    const apiDefinition: ApiDefinitionInterface = {
-      method: formData.method,
-      serializer: formData.serializer,
-      description: formData.description,
-      authenticatable: formData.authenticatable ? 1 : 0,
-      url_list: formData.url_list,
-      url_path: formData.url_path,
-      fun_definition: formData.fun_definition,
-      apiParameters: this.apiParameters
-    };
 
-    this.apiService.createApiDefinition(apiDefinition).subscribe(
-      response => {
-        console.log('API Definition created successfully:', response);
-        this.selectedApiDefinitionId = response.id;
-        this.apiDefinitionForm.reset()
+  buscarApiDef() {
+    this.idApiDefSearch = +this.apiGeneralForm.get('idApiDefSearch')?.value;
+
+    this.apiService.getApiDefinition(this.idApiDefSearch).subscribe(
+      (data: ApiDefinitionResponse | ApiDefinitionResponse[]) => {
+        if (Array.isArray(data)) {
+          this.ResponseSingleApiDefinition = null
+          this.ResponseapiDefinitions = data;
+          for(let def of this.ResponseapiDefinitions){
+            this.buscarApiParamsPorID(def.id)
+            console.log
+          }
+          console.log(this.ResponseapiDefinitions);
+
+          
+
+        } else {
+          this.ResponseapiDefinitions = []
+          this.ResponseSingleApiDefinition = data;
+          this.buscarApiParamsPorID(this.idApiDefSearch);
+          console.log(this.ResponseSingleApiDefinition);
+
+        }
+ 
+        
       }
+      
     )
 
-    this.apidefinitions.push(apiDefinition);
-    this.activarParams()
-    this.apiDefinitionForm.reset();
-
-
+    
+    this.showResults()
   }
 
-  onSubmitApiParameter() {
-    const formData = this.apiParameterForm.value;
-    const apiParameter: ApiParametersInterface = {
-      id_api_definition: this.selectedApiDefinitionId,
-      field: formData.field,
-      id_parameter_type: formData.id_parameter_type,
-      data_type: formData.data_type,
-      default_value: this.default_value,
-      body: formData.inBody ? 1 : 0,
-      in_response: formData.in_response ? 1 : 0,
-      required: formData.required ? 1 : 0
-    };
 
-    this.apiParameters.push(apiParameter);
-    this.apiParameterForm.reset();
+  buscarApiParamsPorID(id:number){
+    this.apiService.getApiParameters(id).subscribe(
+      (data: ApiParametersResponse[]) => {
+        this.ResponseApiParams = data;
+        console.log(this.ResponseApiParams)
+      });
+    
   }
 
-  createdApiParameters(){
-    for(let parameter of this.apiParameters){
-      this.apiService.createApiParameters(parameter).subscribe(
-        response => {
-          console.log("Parameter created successfully", response);
-          // this.selectedApiParameterId = response.id
-          this.apiParameters = []
-        }
-      )
-      // this.parameterId = this.selectedApiParameterId
-      this.showAlertMessage()
+  deleteApiDef(id:number){
+    const confirmDelete = confirm('¿Estas seguro que deseas eliminar esta ApiDefinition?');
+    if (confirmDelete) {
+      this.apiService.deleteApiDef(this.ResponseSingleApiDefinition?.id).subscribe()}
+
+    this.ResponseSingleApiDefinition = null
+    this.showAlertMessage()
+  }
+
+  deleteApiParam(id:number){
+    const confirmDelete = confirm('¿Estas seguro que deseas eliminar este parametro?');
+    if(confirmDelete){
+      this.apiService.deleteApiParams(id).subscribe()
     }
+    this.buscarApiParamsPorID(this.idApiDefSearch)
+      
   }
 
-  selectApiDefinition(apiDefinitionId: number) {
-    this.selectedApiDefinitionId = apiDefinitionId;
-  }
-
-  activarParams(){
-    this.isactive =  true
+  desactivarCreate(){
+    this.createdActive = false;
+    this.resultsapis = true;
   }
 
   showAlertMessage() {
@@ -117,6 +103,14 @@ export class GeneralFormComponent {
     setTimeout(() => {
       this.showAlert = false;
     }, 2000); // Ocultar después de 2000 milisegundos (2 segundos)
+  }
+
+  showResults(){
+    this.isActiveResults = true;
+  }
+  createdAcive(){
+    this.createdActive = true;
+    this.resultsapis = false;
   }
 }
 // export class GeneralFormComponent {

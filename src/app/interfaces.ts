@@ -49,6 +49,18 @@ export interface ApiTableSchemaResponse {
   id: number; // Asegúrate de que el objeto de respuesta incluya el ID
 }
 
+export interface ApiDefintion{
+  id:number;
+  method:string;    
+  serializer:string;    
+  description:string;    
+  authenticatable:number;    
+  url_list:string;    
+  url_path:string;    
+  fun_definition:string;
+  apiParameters: ApiParametersInterface[];
+}
+
 export interface ApiDefinitionInterface{  
   method:string;    
   serializer:string;    
@@ -58,6 +70,18 @@ export interface ApiDefinitionInterface{
   url_path:string;    
   fun_definition:string;
   apiParameters: ApiParametersInterface[];
+}
+
+export interface ApiParameter{
+  id:number;
+  id_api_definition:number;    
+  field:string;    
+  required:number;    
+  id_parameter_type:number;    
+  data_type:string;    
+  default_value:string;    
+  body:number;    
+  in_response:number;
 }
 
 export interface ApiParametersInterface{
@@ -72,9 +96,26 @@ export interface ApiParametersInterface{
 }
 
 export interface ApiDefinitionResponse {
-  id: number; // Asegúrate de que el objeto de respuesta incluya el ID
+  id: number;
+  method:string;    
+  serializer:string;    
+  description:string;    
+  authenticatable:number;    
+  url_list:string;    
+  url_path:string;    
+  fun_definition:string;
+  apiParameters: ApiParametersResponse[];
+   // Asegúrate de que el objeto de respuesta incluya el ID
 }
 
 export interface ApiParametersResponse {
-  id: number; // Asegúrate de que el objeto de respuesta incluya el ID
+    id: number; 
+    id_api_definition:number;    
+    field:string;    
+    required:number;    
+    id_parameter_type:number;    
+    data_type:string;    
+    default_value:string;    
+    body:number;    
+    in_response:number;// Asegúrate de que el objeto de respuesta incluya el ID
 }
