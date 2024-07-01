@@ -18,7 +18,6 @@ export class GeneralFormComponent {
   apidefinitions: ApiDefinitionInterface[] = [];
   apiParameters: ApiParametersInterface[] = [];
   selectedApiDefinitionId: number = 0;
-  selectedApiParameterId:number = 0;
   idparameter:number = 1;
   isactive:boolean = false
   default_value:string = '0'
@@ -96,9 +95,11 @@ export class GeneralFormComponent {
       this.apiService.createApiParameters(parameter).subscribe(
         response => {
           console.log("Parameter created successfully", response);
+          // this.selectedApiParameterId = response.id
           this.apiParameters = []
         }
       )
+      // this.parameterId = this.selectedApiParameterId
       this.showAlertMessage()
     }
   }

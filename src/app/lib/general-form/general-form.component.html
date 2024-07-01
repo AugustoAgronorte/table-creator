@@ -144,7 +144,7 @@
 
             <div class="col-md-6 d-flex justify-content-between w-100 mt-4">
                 <button type="submit" class="btn btn-primary" [disabled]="apiParameterForm.invalid">Agregar ApiParameter</button>
-                <button type="button" class="btn btn-success me-4" (click)="createdApiParameters()">Crear parámetros</button>
+                <button *ngIf="apiParameters.length > 0" type="button" class="btn btn-success me-4" (click)="createdApiParameters()">Crear parámetros</button>
             </div>
         </form>
     </div> 
@@ -165,12 +165,15 @@
         <hr>
   
         <!-- Mostrar ApiParameters -->
-        <div>
+        <div style="max-height: 300px; overflow-y: auto;">
           <h6>Parametros:</h6>
           <ul>
             <li *ngFor="let parameter of apiDefinition.apiParameters">
-              <p><strong>ID: {{selectedApiParameterId}}</strong><strong> - Campo:</strong> {{ parameter.field }}</p>
-              <p><strong>Tipo Parámetro:</strong> {{ parameter.id_parameter_type }}</p>
+              <p><strong>Campo:</strong> {{ parameter.field }}</p>
+              <p *ngIf="parameter.id_parameter_type == 1"><strong>Tipo Parámetro:</strong>Primitivo</p>
+              <p *ngIf="parameter.id_parameter_type == 2"><strong>Tipo Parámetro:</strong>Objeto</p>
+              <p *ngIf="parameter.id_parameter_type == 3"><strong>Tipo Parámetro:</strong>Modelo</p>
+              <p *ngIf="parameter.id_parameter_type == 4"><strong>Tipo Parámetro:</strong>Lista</p>
               <p><strong>Tipo de datos del parámetro:</strong> {{ parameter.data_type }}</p>
               <p><strong>¿Response - Request?</strong> {{ parameter.in_response ? 'Response' : 'Request' }}</p>
               <p><strong>¿Requerido?</strong> {{ parameter.required ? 'Sí' : 'No' }}</p>
