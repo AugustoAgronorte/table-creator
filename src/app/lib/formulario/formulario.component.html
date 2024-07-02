@@ -44,8 +44,13 @@
         <button class="btn btn-primary m-2 ms-0" (click)="createTableSchemaAndHeaders()">Crear</button>
       </div>
 
-      <div class="col-md-2 mx-auto d-flex">
-        <button (click)="selectAll()" class="btn btn-warning my-auto mx-auto"> Seleccionar todo</button>
+      <div class="col-md-2 mx-auto my-auto">
+        <div class="mb-2">
+          <button (click)="selectAll()" class="btn btn-warning w-100">Seleccionar todo</button>
+        </div>
+        <div>
+          <button (click)="this.selectedItems=[]" class="btn btn-danger w-100">Eliminar todo</button>
+        </div>
       </div>
      
 
