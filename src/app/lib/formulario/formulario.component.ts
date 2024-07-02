@@ -14,17 +14,19 @@ import { GeneralFormComponent } from '../general-form/general-form.component';
   styleUrl: './formulario.component.css'
 })
 
-export class FormularioComponent{
+export class FormularioComponent {
 
   api_path: string = ''; // Segmento de la URL de la API después de /api
   table_name: string = ''; // Nombre de la tabla
+  api_table_name = ''
+
   criteria_group:ApiSearchGroup = {
     logic_operator: "",
     group_list: []
   }
   
   selectedItems: any[] = [];
-  responseData!:ApiSearchResponse;
+  responseData: string[] = [];
   fieldNames: string[] = [];
   currentPage: number = 1;
   id_table_api_schema: number = 1;
@@ -36,22 +38,31 @@ export class FormularioComponent{
   constructor(private apiService: ApiService) { }
 
   onSubmit(currentPage: number) {
-    this.apiService.searchTableData<ApiSearchResponse>(
+    this.apiService.searchTableData(
       this.api_path,
       this.table_name,
       currentPage,
       this.criteria_group
-    ).subscribe(data => {
+    ).subscribe((data: any) => {
+
+      console.log(data)
+
+
+
       this.responseData = data;
       this.processData();
     });
   }
   
   processData() {
-    if (this.responseData && this.responseData.results && this.responseData.results.length > 0) {
+    if (this.responseData.length > 0) {
+      
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
-      this.fieldNames = Object.keys(this.responseData.results[0]).slice(startIndex, endIndex);
+      // this.fieldNames = Object.keys(this.responseData[0]).slice(startIndex, endIndex);
+      
+      this.fieldNames = this.responseData.slice(startIndex, endIndex);
+
     }
   }
 
@@ -62,13 +73,17 @@ export class FormularioComponent{
   }
 
   selectAll() {
-    if (Object.keys(this.responseData.results[0])) {
-      Object.keys(this.responseData.results[0]).forEach(item => {
-        if (!this.selectedItems.includes(item)) {
-          this.selectedItems.push(item);
-        }
-      });
-    }
+    // if (Object.keys(this.responseData[0])) {
+    //   Object.keys(this.responseData[0]).forEach(item => {
+    //     if (!this.selectedItems.includes(item)) {
+    //       this.selectedItems.push(item);
+    //     }
+    //   });
+    // }
+    this.selectedItems = []
+    this.responseData.forEach(element => {
+      this.selectedItems.push(element)
+    });
   }
 
   capitalizeFirstLetter(text: string): string {
@@ -80,8 +95,8 @@ export class FormularioComponent{
   
   createTableSchemaAndHeaders() {
     const requestBody: ApiTableSchemaRequest = {
-      table_key_name: "tabla_" + this.table_name,
-      api_path: this.api_path + "/" + this.table_name,
+      table_key_name: this.api_table_name,
+      api_path: this.api_path,
       pagination: 1,
       editable: 1,  
       deletable: 0  
@@ -133,11 +148,12 @@ export class FormularioComponent{
   }
   
   get totalPages(): number {
-    if (this.responseData && this.responseData.results && this.responseData.results.length > 0) {
-      return Math.ceil(Object.keys(this.responseData.results[0]).length / this.itemsPerPage);
-    } else {
-      return 0; // Manejar el caso cuando no hay resultados o responseData no está definido
-    }
+    // if (this.responseData && this.responseData.results && this.responseData.results.length > 0) {
+    //   return Math.ceil(Object.keys(this.responseData.results[0]).length / this.itemsPerPage);
+    // } else {
+    //   return 0; // Manejar el caso cuando no hay resultados o responseData no está definido
+    // }
+    return 1
   }
 
   showAlertMessage() {
