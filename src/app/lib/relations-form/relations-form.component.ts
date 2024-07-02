@@ -110,6 +110,7 @@ export class RelationsFormComponent implements OnInit {
   }
 
   limpiarForm(){
+    this.responseData = undefined;
     this.tablaSeleccionadaPadre = '';
     this.tablaSeleccionadaHijo = '';
     this.camposPadre = [];
