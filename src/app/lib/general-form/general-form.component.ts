@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { ApiDefinitionInterface, ApiDefinitionResponse, ApiParametersInterface, ApiParametersResponse } from '../../interfaces';
 import { ApiCreatorComponent } from '../api-creator/api-creator.component';
 import { filter } from 'rxjs';
+import { Serializer } from '@angular/compiler';
+import { T } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-general-form',
@@ -26,20 +28,28 @@ export class GeneralFormComponent {
   showAlert:boolean = false;
   inUpdate:boolean = false;
   selectedApiDefinition: any = null;
+  pathPatch:string = 'api_definition'
 
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.apiGeneralForm = this.fb.group({
       idApiDefSearch: ['', Validators.required],
+      method: [''],
+      serializer:[''],
+      description:[''],
+      url_list:[''],
+      fun_definition:[''],
+      url_path:[''],
+      authenticatable:[false]
        // Ajusta el nombre aquí según tu formulario
     });
   }
+
 
 ////////////////////////////////////////////////////////////////////////
 //// API DEFINITION
   buscarApiDef() {
     this.idApiDefSearch = +this.apiGeneralForm.get('idApiDefSearch')?.value;
-
     this.apiService.getApiDefinition(this.idApiDefSearch).subscribe(
       (data: ApiDefinitionResponse | ApiDefinitionResponse[]) => {
         if (Array.isArray(data)) {
@@ -57,14 +67,9 @@ export class GeneralFormComponent {
           this.buscarApiParamsPorID(this.idApiDefSearch);
           console.log(this.ResponseSingleApiDefinition);
 
-        }
- 
-        
+        } 
       }
-      
     )
-
-    
     this.showResults()
   }
 
@@ -77,20 +82,30 @@ export class GeneralFormComponent {
     this.showAlertMessage()
   }
 
-  editApiDef(id:number){
-    this.apiService.getApiDefinition(id).subscribe((data: any) => {
-      this.selectedApiDefinition = data;
-      this.apiGeneralForm.patchValue({
-        method: data.method,
-        serializer: data.serializer,
-        description: data.description,
-        url_list: data.url_list,
-        fun_definition: data.fun_definition,
-        url_path: data.url_path,
-        authenticatable: data.authenticatable
+  editApiDef(ResponseSingleApiDefinition: ApiDefinitionResponse){
+    this.idApiDefSearch = ResponseSingleApiDefinition.id
+    this.apiGeneralForm.patchValue({
+        id: ResponseSingleApiDefinition.id,
+        method: ResponseSingleApiDefinition.method,
+        serializer: ResponseSingleApiDefinition.serializer,
+        description: ResponseSingleApiDefinition.description,
+        url_list: ResponseSingleApiDefinition.url_list,
+        fun_definition: ResponseSingleApiDefinition.fun_definition,
+        url_path: ResponseSingleApiDefinition.url_path,
+        authenticatable: ResponseSingleApiDefinition.authenticatable
       });
-    });
+    
+    this.selectedApiDefinition = this.apiGeneralForm.value;
+    this.inUpdateApi()
   }
+
+  saveChanges(ResponseSingleApiDefinition:ApiDefinitionResponse){
+    const updatedData = this.apiGeneralForm.value; // Obtén los valores actualizados del formulario
+    this.apiService.patchApi(this.idApiDefSearch, this.pathPatch, updatedData).subscribe();
+  }
+
+    
+
 
  //////////////////////////////////////////////////////////////////////////
  ///////// API PARAMETERS 

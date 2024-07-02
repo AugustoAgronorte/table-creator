@@ -84,7 +84,7 @@ export class ApiService {
   }
 
    patchApi(id: number,path:string, partialData: Partial<ApiDefinitionResponse | ApiParametersResponse>): Observable<any> {
-    const url = `${this.apiUrl}/${path}/${id}`;
+    const url = `${this.apiUrl}/${path}/${id}/update`;
     return this.http.patch(url, partialData);
   }
 
