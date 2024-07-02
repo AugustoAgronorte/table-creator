@@ -12,13 +12,16 @@ import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 })
 export class ApiService {
   
-  private apiUrl = 'http://localhost:8000';
+  private apiUrl = 'http://192.168.2.109:8080';
 
   constructor(private http: HttpClient) { }
 
-  searchTableData<ApiSearchResponse>(apiPath: string, tableParam: string, page: number, criteriaGroup: ApiSearchGroup): Observable<ApiSearchResponse>{
+  searchTableData(apiPath: string, tableParam: string, page: number, criteriaGroup: ApiSearchGroup) {
   // searchTableData<T>(apiPath: string, tableParam: string,page:number): Observable<T> {
-    const url = `${this.apiUrl}/${apiPath}/${tableParam}?page=${page}`;
+    
+    var url = this.apiUrl+"/table_api_schema/headers/"+tableParam 
+
+    // url = `${this.apiUrl}/${apiPath}/${tableParam}?page=${page}`;
     console.log('URL:' , url)
 
     const requestData: ApiSearchRequest = {
@@ -26,7 +29,10 @@ export class ApiService {
       criteria_group: criteriaGroup
     };
     
-    return this.http.post<ApiSearchResponse>(url, requestData, { headers :{'Authorization': `aa` }});
+    // return this.http.post<ApiSearchResponse>(url, requestData, { headers :{'Authorization': `aa` }});
+
+    return this.http.get(url,{headers: {'Authorization': ''}})
+
   }
 
   createTableSchema(requestBody: ApiTableSchemaRequest): Observable<ApiTableSchemaResponse> {
