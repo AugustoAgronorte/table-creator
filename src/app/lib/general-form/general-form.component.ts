@@ -104,6 +104,7 @@ export class GeneralFormComponent {
   saveChanges(ResponseSingleApiDefinition:ApiDefinitionResponse){
     const updatedData = this.apiGeneralForm.value; // Obtén los valores actualizados del formulario
     this.apiService.patchApi(this.idApiDefSearch, this.pathPatch, updatedData).subscribe();
+    this.buscarApiDef()
   }
 
     
