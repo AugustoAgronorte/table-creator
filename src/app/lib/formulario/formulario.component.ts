@@ -31,7 +31,6 @@ export class FormularioComponent {
   currentPage: number = 1;
   id_table_api_schema: number = 1;
   tableSchemaId!: number;
-  itemsPerPage:number = 10;
   showAlert:boolean = false;
   
 
@@ -56,12 +55,7 @@ export class FormularioComponent {
   
   processData() {
     if (this.responseData.length > 0) {
-      
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      // this.fieldNames = Object.keys(this.responseData[0]).slice(startIndex, endIndex);
-      
-      this.fieldNames = this.responseData.slice(startIndex, endIndex);
+      this.fieldNames = this.responseData;
 
     }
   }

@@ -53,18 +53,18 @@
         <h3>Resultados</h3>
         <hr>
         <div class="d-flex flex-column"style="height: 100%;">
-          <ul class="w-100" style="max-height: 460px; min-height: 440px;" *ngIf="responseData">
+          <ul class="w-100" style="max-height: 460px; min-height: 440px; overflow-y: auto;" *ngIf="responseData">
             <li class="d-flex justify-content-between align-items-center pb-1" *ngFor="let key of fieldNames; let i = index ">
               <p>{{key}}</p>
               <button class="btn btn-secondary d-flex" (click)="showSelectedItem(i)" >Agregar</button>
             </li>
           </ul>
 
-          <div *ngIf="responseData" class="paginator d-flex justify-content-center align-items-bottom ">
+          <!-- <div *ngIf="responseData" class="paginator d-flex justify-content-center align-items-bottom ">
             <button class="btn btn-primary" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
             <span class="paginator-info">Page {{ currentPage }} of {{ totalPages }}</span>
             <button class="btn btn-primary" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
-        </div>          
+        </div>           -->
       </div>
 
     </div>
