@@ -119,3 +119,22 @@ export interface ApiParametersResponse {
     body:number;    
     in_response:number;// Asegúrate de que el objeto de respuesta incluya el ID
 }
+
+export interface ApiSchemaHeadersResponse{
+    result: boolean;
+    message: string;
+    status: number;
+    datetime: string;
+    content_type: string;
+    content: string[];
+}
+
+export interface RelationsCreateRequest{
+  description: string,
+  table_from: string,
+  table_from_key: string,
+  table_to: string,
+  table_to_key: string,
+  editable: number,
+  relation_type:string
+}
