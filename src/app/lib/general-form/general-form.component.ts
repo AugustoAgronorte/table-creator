@@ -29,6 +29,7 @@ export class GeneralFormComponent {
   inUpdate:boolean = false;
   selectedApiDefinition: any = null;
   pathPatch:string = 'api_definition'
+  inSearch:boolean = false;
 
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
@@ -71,6 +72,7 @@ export class GeneralFormComponent {
       }
     )
     this.showResults()
+    this.inSearchApi();
   }
 
   deleteApiDef(id:number){
@@ -137,6 +139,9 @@ export class GeneralFormComponent {
 
   inUpdateApi(){
     this.inUpdate = true;
+  }
+  inSearchApi(){
+    this.inUpdate = false;
   }
   showAlertMessage() {
     this.showAlert = true;

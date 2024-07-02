@@ -12,7 +12,7 @@
             </div>
 
             <h6>Buscar api Definition</h6>
-            <p class="alert alert-primary">Si desea obtener todas las definiciones, no ingrese id. <br> Para una busqueda individual, introduzca el ID. <br> Si desea <strong>EDITAR</strong> o <strong>ELIMINAR</strong> busque por Id para las opciones
+            <p class="alert alert-primary">Si desea obtener todas las definiciones, no ingrese id. <br> Para una busqueda individual, introduzca el ID. <br> Si desea <strong>ELIMINAR</strong> busque por Id para asegurarse que es la correcta
             <div class="col-md-6">
                 <div class="form-group  mb-2">
                     <label for="idApiDefSearch">Id Api Definition</label>
@@ -100,7 +100,6 @@
                     <h4>ApiDefinition</h4>
                     <div class="d-flex justify-content-end">
                         <button (click)="editApiDef(definition)" class="btn btn-warning me-2">Editar</button>
-                        <button (click)="deleteApiDef(definition.id)" class="btn btn-danger">Eliminar</button>
                     </div>
                     <hr>
                     <p><strong>ID: {{definition.id}}</strong><strong> - Nombre: {{definition.serializer}}</strong></p>
@@ -128,7 +127,6 @@
         <div *ngIf="ResponseSingleApiDefinition" class="bg-white rounded rounded--lg shadow-lg mb-4 p-3">
             <div class="d-flex justify-content-between align-items-center">
                 <h4>ApiDefinition</h4>
-                <button  class="btn btn-warning">Editar</button>
                 <button (click)="deleteApiDef(ResponseSingleApiDefinition.id)" class="btn btn-danger">Eliminar</button>
             </div>
             <hr>
@@ -146,7 +144,6 @@
                 <ul *ngFor="let parameter of ResponseApiParams" class="w-100">
                     <li *ngIf="parameter.id_api_definition == ResponseSingleApiDefinition.id">
                         <div class="d-flex justify-content-end">
-                            <button class="btn btn-warning me-2">Editar</button>
                             <button (click)="deleteApiParam(parameter.id)" class="btn btn-danger">Eliminar</button>
                         </div>
                         <p><strong>ID: {{parameter.id}}</strong><strong> - Campo:</strong> {{ parameter.field }}</p>
