@@ -4,16 +4,19 @@ import { ApiSchemaHeadersResponse, ApiTableSchemaResponse } from '../../interfac
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RelationsCreateRequest } from '../../interfaces';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-relations-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './relations-form.component.html',
   styleUrl: './relations-form.component.css'
 })
 export class RelationsFormComponent implements OnInit {
 
+  faArrowsAltH = faArrowsAltH;
   responseData?: ApiSchemaHeadersResponse;
   tablaSeleccionadaPadre:string = '';
   campoSelecionadoPadre:string = '';
@@ -21,6 +24,7 @@ export class RelationsFormComponent implements OnInit {
   campoSelecionadoHijo:string = '';
   camposPadre: string[] = [];
   camposHijo: string[] = [];
+  tablasCreadas:any[] = [];
   description:string = '';
   editable:number = 0;
   realtionTableId:number = 0;
@@ -39,6 +43,7 @@ export class RelationsFormComponent implements OnInit {
       });
   }
 
+  //////////// Padre
   onTablaSelectedPadre(event: any) {
     if (event && event.target) {
       this.tablaSeleccionadaPadre = event.target.value;
@@ -61,7 +66,7 @@ export class RelationsFormComponent implements OnInit {
     );
   }
 
-  ///////////////////
+  /////////////////// Hijo
   onTablaSelectedHijo(event: any) {
     if (event && event.target) {
       this.tablaSeleccionadaHijo = event.target.value;
@@ -99,6 +104,19 @@ export class RelationsFormComponent implements OnInit {
       this.realtionTableId = response.id;
     }
    )
+
+  this.tablasCreadas.push(relationsBody)
+  console.log(this.tablasCreadas)
+  }
+
+  limpiarForm(){
+    this.tablaSeleccionadaPadre = '';
+    this.tablaSeleccionadaHijo = '';
+    this.camposPadre = [];
+    this.camposHijo = [];
+    this.description = '';
+    this.relationalType = '';
+    this.editable = 0;
   }
 }
 

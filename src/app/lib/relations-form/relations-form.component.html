@@ -5,36 +5,43 @@
     <div class="row">
       <div class="col-md-6">
         <form (submit)="onSumbit()">
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="tablaSeleccionadaPadre" class="form-label">Tabla padre</label>
-              <select id="tablaSeleccionadaPadre" class="form-select" (change)="onTablaSelectedPadre($event)">
-                <option value="">Seleccionar una tabla</option>
-                <option *ngFor="let opcion of responseData?.content" [value]="opcion">{{ opcion }}</option>
-              </select>
+          <div class="row">
+            <div class="col-md-5">
+              <div class="col">
+                <label for="tablaSeleccionadaPadre" class="form-label">Tabla padre</label>
+                <select id="tablaSeleccionadaPadre" class="form-select" (change)="onTablaSelectedPadre($event)">
+                  <option value="">Seleccionar una tabla</option>
+                  <option *ngFor="let opcion of responseData?.content" [value]="opcion">{{ opcion }}</option>
+                </select>
+              </div>
+              <div class="col">
+                <label for="campoPadre" class="form-label">Campo</label>
+                <select id="campoPadre" class="form-select" (change)="onCampoSelectedPadre($event)">
+                  <option value="">Selecciona un campo</option>
+                  <option *ngFor="let campo of camposPadre" [value]="campo">{{ campo }}</option>
+                </select>
+
+              </div>
             </div>
-            <div class="col-md-6">
-              <label for="tablaHijo" class="form-label">Tabla hijo</label>
-              <select id="tablaHijo" class="form-select" (change)="onTablaSelectedHijo($event)">
-                <option value="">Selecciona una tabla</option>
-                <option *ngFor="let opcion of responseData?.content" [value]="opcion">{{ opcion }}</option>
-              </select>
+            <div class="col-md-2 d-flex justify-content-center align-items-center">
+              <fa-icon [icon]="faArrowsAltH" class="display-6"></fa-icon>
+              
             </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="campoPadre" class="form-label">Campo</label>
-              <select id="campoPadre" class="form-select" (change)="onCampoSelectedPadre($event)">
-                <option value="">Selecciona un campo</option>
-                <option *ngFor="let campo of camposPadre" [value]="campo">{{ campo }}</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label for="campoHijo" class="form-label">Campo</label>
-              <select id="campoHijo" class="form-select" (change)="onCampoSelectedHijo($event)">
-                <option value="">Selecciona un campo</option>
-                <option *ngFor="let campo of camposHijo" [value]="campo">{{ campo }}</option>
-              </select>
+            <div class="col-md-5 mb-4">
+              <div class="col">
+                <label for="tablaHijo" class="form-label">Tabla hijo</label>
+                <select id="tablaHijo" class="form-select" (change)="onTablaSelectedHijo($event)">
+                  <option value="">Selecciona una tabla</option>
+                  <option *ngFor="let opcion of responseData?.content" [value]="opcion">{{ opcion }}</option>
+                </select>
+              </div>
+              <div class="col">
+                <label for="campoHijo" class="form-label">Campo</label>
+                <select id="campoHijo" class="form-select" (change)="onCampoSelectedHijo($event)">
+                  <option value="">Selecciona un campo</option>
+                  <option *ngFor="let campo of camposHijo" [value]="campo">{{ campo }}</option>
+                </select>
+              </div>
             </div>
           </div>
           <div class="row mb-3">
@@ -60,12 +67,28 @@
 
           <div class="d-flex justify-content-end">
             <button type="submit" class="btn btn-primary me-2">Crear</button>
-            <button type="button" class="btn btn-secondary">Cancelar</button>
+            <button type="button" (click)="limpiarForm()" class="btn btn-secondary">Cancelar</button>
           </div>
         </form>
       </div>
       <div class="col-md-6">
+        <div *ngFor="let tabla of this.tablasCreadas" class="bg-white rounded rounded--lg shadow-lg mb-4 p-3">
+        <h4>Tabla creada</h4>
+        <hr>
+        <p><strong>Descripcion: </strong>{{tabla.description}}</p>
+        <p><strong>Tipo: </strong>{{tabla.relation_type}}</p>
+        <p><strong>Tabla padre: </strong>{{tabla.table_from}}</p>
+        <p><strong>Campo padre: </strong>{{tabla.table_from_key}}</p>
+        <hr>
+        <p><strong>Tabla hijo: </strong>{{tabla.table_to}}</p>
+        <p><strong>Campo hijo: </strong>{{tabla.table_to_key}}</p>
+        <p *ngIf="tabla.editable == 1"><strong>¿Editable?: </strong>Si</p>
+        <p *ngIf="tabla.editable == 0"><strong>¿Editable?: </strong>No</p>
+        <p><strong>Descripcion: </strong>{{tabla.description}}</p>
 
+
+
+      </div>
       </div>
     </div>
   </div>
