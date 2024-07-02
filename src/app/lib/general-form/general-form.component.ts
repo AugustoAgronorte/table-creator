@@ -30,6 +30,7 @@ export class GeneralFormComponent {
   selectedApiDefinition: any = null;
   pathPatch:string = 'api_definition'
   inSearch:boolean = false;
+  isNull:boolean = false;
 
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
@@ -50,6 +51,7 @@ export class GeneralFormComponent {
 ////////////////////////////////////////////////////////////////////////
 //// API DEFINITION
   buscarApiDef() {
+    this.isNull = false;
     this.idApiDefSearch = +this.apiGeneralForm.get('idApiDefSearch')?.value;
     this.apiService.getApiDefinition(this.idApiDefSearch).subscribe(
       (data: ApiDefinitionResponse | ApiDefinitionResponse[]) => {
@@ -63,17 +65,22 @@ export class GeneralFormComponent {
           }
 
         } else {
-          this.ResponseapiDefinitions = []
           this.ResponseSingleApiDefinition = data;
           this.buscarApiParamsPorID(this.idApiDefSearch);
           console.log(this.ResponseSingleApiDefinition);
-
-        } 
-      }
-    )
-    this.showResults()
-    this.inSearchApi();
+        }
+  
+        // Llamar a métodos adicionales
+        this.showResults();
+        this.inSearchApi();
+      },
+      (error) => {
+        if (error.status === 404) {
+          this.isNull = true;
+        }
+      })
   }
+
 
   deleteApiDef(id:number){
     const confirmDelete = confirm('¿Estas seguro que deseas eliminar esta ApiDefinition?');
