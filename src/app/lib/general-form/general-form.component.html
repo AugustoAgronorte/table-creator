@@ -20,22 +20,147 @@
                         formControlName="idApiDefSearch">
                 </div>
                 <div class="d-flex justify-content-between">
-                    <button type="submit" (click)="desactivarCreate()" class="btn btn-info">Buscar</button>
+                    <button type="submit" (click)="desactivarCreate()" class="btn btn-primary">Buscar</button>
                     <button type="button" (click)="createdAcive()" class="btn btn-success">Crear Definicion</button>
                 </div>
             </div>
             <hr>
         </form>
+        <form>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="method">Método HTTP:</label>
+                    <select id="method" class="form-control shadow-lg" formControlName="method" required>
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="OBJECT">OBJECT</option>
+                    </select>
+                    </div>
+                </div>
+        
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="serializer">Nombre serializer:</label>
+                    <input id="serializer" class="form-control shadow-lg" formControlName="serializer" type="text" required placeholder="ApiSearch" />
+                    </div>
+                </div>
+            </div>
+      
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="description">Descripción:</label>
+                    <input id="description" class="form-control shadow-lg" formControlName="description" type="text" required placeholder="Api general de búsqueda" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="url_list">Url_list:</label>
+                    <input id="url_list" class="form-control shadow-lg" formControlName="url_list" type="text" required placeholder="urls_api_globals" />
+                    </div>
+                </div>
+            </div>
+      
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="fun_definition">Definición de función:</label>
+                    <input id="fun_definition" class="form-control shadow-lg" formControlName="fun_definition" type="text" required placeholder="search_api" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="url_path">Api path:</label>
+                    <input id="url_path" class="form-control shadow-lg" formControlName="url_path" type="text" required placeholder="api/search/" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="authenticatable">Autorizable:</label>
+                    <div class="form-check form-switch pb-2">
+                        <input class="form-check-input" type="checkbox" formControlName="authenticatable" id="authenticatable">
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- <form [formGroup]="apiGeneralForm" *ngIf="inUpdate">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="method">Método HTTP:</label>
+                    <select id="method" class="form-control shadow-lg" formControlName="method" required>
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="OBJECT">OBJECT</option>
+                    </select>
+                    </div>
+                </div>
+        
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="serializer">Nombre serializer:</label>
+                    <input id="serializer" class="form-control shadow-lg" formControlName="serializer" type="text" required placeholder="ApiSearch" />
+                    </div>
+                </div>
+            </div>
+      
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="description">Descripción:</label>
+                    <input id="description" class="form-control shadow-lg" formControlName="description" type="text" required placeholder="Api general de búsqueda" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="url_list">Url_list:</label>
+                    <input id="url_list" class="form-control shadow-lg" formControlName="url_list" type="text" required placeholder="urls_api_globals" />
+                    </div>
+                </div>
+            </div>
+      
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="fun_definition">Definición de función:</label>
+                    <input id="fun_definition" class="form-control shadow-lg" formControlName="fun_definition" type="text" required placeholder="search_api" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="url_path">Api path:</label>
+                    <input id="url_path" class="form-control shadow-lg" formControlName="url_path" type="text" required placeholder="api/search/" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-2">
+                    <label for="authenticatable">Autorizable:</label>
+                    <div class="form-check form-switch pb-2">
+                        <input class="form-check-input" type="checkbox" formControlName="authenticatable" id="authenticatable">
+                    </div>
+                    </div>
+                </div>
+            </div>
+      
+            <button type="submit" class="btn btn-primary mb-4" [disabled]="apiGeneralForm.invalid">Guardar cambios</button>
+        </form> -->
+
+        
+
     </div>
 
-
-    
-
-    <div *ngIf="resultsapis" class="col-md-6" style="max-height: 800px; overflow-y: auto;">
+    <div *ngIf="resultsapis" class="col-md-6" style="max-height: 1000px; overflow-y: auto;">
         <div *ngIf="(ResponseapiDefinitions || ResponseSingleApiDefinition) && isActiveResults == true ">
-                <div *ngFor="let definition of ResponseapiDefinitions"
+                <div *ngFor="let definition of this.ResponseapiDefinitions"
                     class="bg-white rounded rounded--lg shadow-lg mb-4 p-3">
                     <h4>ApiDefinition</h4>
+                    <div class="d-flex justify-content-end">
+                        <button (click)="editApiDef(definition.id)" class="btn btn-warning me-2">Editar</button>
+                        <button (click)="deleteApiDef(definition.id)" class="btn btn-danger">Eliminar</button>
+                    </div>
                     <hr>
                     <p><strong>ID: {{definition.id}}</strong><strong> - Nombre: {{definition.serializer}}</strong></p>
                     <p><strong>Método HTTP:</strong> {{ definition.method }}</p>
@@ -46,8 +171,9 @@
                     <p><strong>Autorizable:</strong> {{ definition.authenticatable ? 'Sí' : 'No' }}</p>
 
 
-                    <div style="max-height: 450px; overflow-y: auto;">
+                    <div  style="max-height: 450px; overflow-y: auto;">
                         <h6>Parametros:</h6>
+                        <hr>
                         <ul *ngFor="let param of this.ResponseApiParams">
                             <li *ngIf="param.id_api_definition == definition.id">
                                 <p><strong>ID: {{param.id}}</strong><strong>- Campo:</strong> {{param.field}}</p>
@@ -97,7 +223,6 @@
                 </ul>
             </div>
         </div>
-        </div>
-        <app-api-creator *ngIf="createdActive"></app-api-creator>
+    </div>
 </div>
 

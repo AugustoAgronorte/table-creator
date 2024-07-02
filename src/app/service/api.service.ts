@@ -83,8 +83,8 @@ export class ApiService {
     return this.http.delete<any>(url);
   }
 
-   patchApiDef(id: number, partialData: Partial<ApiDefinitionResponse>): Observable<any> {
-    const url = `${this.apiUrl}/api_definition/${id}`;
+   patchApi(id: number,path:string, partialData: Partial<ApiDefinitionResponse | ApiParametersResponse>): Observable<any> {
+    const url = `${this.apiUrl}/${path}/${id}`;
     return this.http.patch(url, partialData);
   }
 
