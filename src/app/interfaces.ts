@@ -131,10 +131,20 @@ export interface ApiSchemaHeadersResponse{
 
 export interface RelationsCreateRequest{
   description: string,
+  form_definition_from:string,
   table_from: string,
   table_from_key: string,
+  form_definition_to:string,
   table_to: string,
   table_to_key: string,
   editable: number,
-  relation_type:string
+  relation_type:string,
+
 }
+
+export interface FormDefResponse{
+    id: number;
+    definition: string;
+    extra_info: string;
+  }
+

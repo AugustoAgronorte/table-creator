@@ -51,7 +51,7 @@ export class GeneralFormComponent {
 ////////////////////////////////////////////////////////////////////////
 //// API DEFINITION
   buscarApiDef() {
-    this.isNull = false;
+    // this.isNull = false;
     this.idApiDefSearch = +this.apiGeneralForm.get('idApiDefSearch')?.value;
     this.apiService.getApiDefinition(this.idApiDefSearch).subscribe(
       (data: ApiDefinitionResponse | ApiDefinitionResponse[]) => {

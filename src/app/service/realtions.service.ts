@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ApiSchemaHeadersResponse, RelationsCreateRequest } from '../interfaces';
+import { ApiSchemaHeadersResponse, FormDefResponse,RelationsCreateRequest } from '../interfaces';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class RealtionsService {
 
-  private apiUrl = 'http://192.168.2.109:8080';
+  private apiUrl = 'http://127.0.0.1:8000/';
 
   constructor(private http: HttpClient){}
 
@@ -26,5 +26,10 @@ export class RealtionsService {
   crearRelation(requestBody:RelationsCreateRequest):Observable<any>{
     const url = `${this.apiUrl}/relations/create`;
     return this.http.post<any>(url, requestBody)
+  }
+
+  getForms():Observable<FormDefResponse[]>{
+    const url = `${this.apiUrl}/forms`;
+    return this.http.get<FormDefResponse[]>(url);
   }
 }

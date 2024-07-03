@@ -20,7 +20,13 @@
                   <option value="">Selecciona un campo</option>
                   <option *ngFor="let campo of camposPadre" [value]="campo">{{ campo }}</option>
                 </select>
-
+              </div>
+              <div class="col">
+                <label for="campoPadre" class="form-label">Definicion formulario padre</label>
+                <select id="campoPadre" class="form-select" (change)="onFormSelectedPadre($event)">
+                  <option value="">Selecciona un campo</option>
+                  <option *ngFor="let form of this.responseDataForm" [value]="form.id">{{form.definition}}</option>
+                </select>
               </div>
             </div>
             <div class="col-md-2 d-flex justify-content-center align-items-center">
@@ -40,6 +46,13 @@
                 <select id="campoHijo" class="form-select" (change)="onCampoSelectedHijo($event)">
                   <option value="">Selecciona un campo</option>
                   <option *ngFor="let campo of camposHijo" [value]="campo">{{ campo }}</option>
+                </select>
+              </div>
+              <div class="col">
+                <label for="campoHijo" class="form-label">Definicion formulario hijo</label>
+                <select  id="campoHijo" class="form-select" (change)="onFormSelectedHijo($event)">
+                  <option value="">Selecciona un campo</option>
+                  <option *ngFor="let form of this.responseDataForm" [value]="form.id">{{form.definition}}</option>
                 </select>
               </div>
             </div>
@@ -79,9 +92,12 @@
         <p><strong>Tipo: </strong>{{tabla.relation_type}}</p>
         <p><strong>Tabla padre: </strong>{{tabla.table_from}}</p>
         <p><strong>Campo padre: </strong>{{tabla.table_from_key}}</p>
+        <p><strong>Form padre: </strong>{{tabla.form_definition_from}}</p>
+
         <hr>
         <p><strong>Tabla hijo: </strong>{{tabla.table_to}}</p>
         <p><strong>Campo hijo: </strong>{{tabla.table_to_key}}</p>
+        <p *ngIf="tabla.form_definition_to"><strong>Form hijo: </strong>{{tabla.form_definition_to}}</p>
         <p *ngIf="tabla.editable == 1"><strong>¿Editable?: </strong>Si</p>
         <p *ngIf="tabla.editable == 0"><strong>¿Editable?: </strong>No</p>
         <p><strong>Descripcion: </strong>{{tabla.description}}</p>

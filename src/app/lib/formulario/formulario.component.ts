@@ -37,6 +37,7 @@ export class FormularioComponent {
   constructor(private apiService: ApiService) { }
 
   onSubmit(currentPage: number) {
+    this.selectedItems = []
     this.apiService.searchTableData(
       this.api_path,
       this.table_name,

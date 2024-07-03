@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RealtionsService } from '../../service/realtions.service';
-import { ApiSchemaHeadersResponse, ApiTableSchemaResponse } from '../../interfaces';
+import { ApiSchemaHeadersResponse, ApiTableSchemaResponse, FormDefResponse} from '../../interfaces';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Form, FormsModule } from '@angular/forms';
 import { RelationsCreateRequest } from '../../interfaces';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
@@ -18,6 +18,9 @@ export class RelationsFormComponent implements OnInit {
 
   faArrowsAltH = faArrowsAltH;
   responseData?: ApiSchemaHeadersResponse;
+  responseDataForm?:FormDefResponse[];
+  formSeleccionadaPadre:string = '0';
+  formSeleccionadaHijo:string = '0';
   tablaSeleccionadaPadre:string = '';
   campoSelecionadoPadre:string = '';
   tablaSeleccionadaHijo:string = '';
@@ -29,8 +32,10 @@ export class RelationsFormComponent implements OnInit {
   editable:number = 0;
   realtionTableId:number = 0;
   relationalType:string = ''
+  
 
-  constructor(private relationService: RealtionsService) {}
+
+  constructor(private relationService: RealtionsService) { }
 
   ngOnInit(): void {
     this.fetchData();
@@ -41,6 +46,13 @@ export class RelationsFormComponent implements OnInit {
       (response) => {
         this.responseData = response;
       });
+
+    this.relationService.getForms().subscribe(
+      (response) => {
+        this.responseDataForm = response;
+        console.log(this.responseDataForm)
+      });
+
   }
 
   //////////// Padre
@@ -92,12 +104,15 @@ export class RelationsFormComponent implements OnInit {
   onSumbit(){
     const relationsBody: RelationsCreateRequest = {
       description:this.description,
+      form_definition_from:this.formSeleccionadaPadre,
       table_from: this.tablaSeleccionadaPadre,
       table_from_key: this.campoSelecionadoPadre,
+      form_definition_to: this.formSeleccionadaHijo,
       table_to:this.tablaSeleccionadaHijo,
       table_to_key:this.campoSelecionadoHijo,
       editable: this.editable ? 1 : 0,
       relation_type:this.relationalType
+      
    }
    this.relationService.crearRelation(relationsBody).subscribe(
     response => {
@@ -119,6 +134,19 @@ export class RelationsFormComponent implements OnInit {
     this.relationalType = '';
     this.editable = 0;
   }
+
+  onFormSelectedPadre(event: any) {
+    if (event && event.target) {
+      this.formSeleccionadaPadre = event.target.value;
+    }
+  }
+
+  onFormSelectedHijo(event:any){
+    if (event && event.target) {
+      this.formSeleccionadaHijo = event.target.value;
+    }
+  }
+
 }
 
 
