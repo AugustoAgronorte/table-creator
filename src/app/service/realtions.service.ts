@@ -32,4 +32,9 @@ export class RealtionsService {
     const url = `${this.apiUrl}/forms`;
     return this.http.get<FormDefResponse[]>(url);
   }
+
+  createTableIntermediate(id:number):Observable<any>{
+    const url = `${this.apiUrl}/api-table-intermediate/create/${id}`;
+    return this.http.get<any>(url)
+  }
 }

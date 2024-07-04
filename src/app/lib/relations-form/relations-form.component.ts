@@ -19,8 +19,8 @@ export class RelationsFormComponent implements OnInit {
   faArrowsAltH = faArrowsAltH;
   responseData?: ApiSchemaHeadersResponse;
   responseDataForm?:FormDefResponse[];
-  formSeleccionadaPadre:string = '0';
-  formSeleccionadaHijo:string = '0';
+  formSeleccionadaPadre:string = 'string';
+  formSeleccionadaHijo:string = 'string';
   tablaSeleccionadaPadre:string = '';
   campoSelecionadoPadre:string = '';
   tablaSeleccionadaHijo:string = '';
@@ -55,7 +55,8 @@ export class RelationsFormComponent implements OnInit {
 
   }
 
-  //////////// Padre
+  //////////// Padre /////////////////////////////////
+  ///////////////////////////////////////////////////
   onTablaSelectedPadre(event: any) {
     if (event && event.target) {
       this.tablaSeleccionadaPadre = event.target.value;
@@ -78,7 +79,8 @@ export class RelationsFormComponent implements OnInit {
     );
   }
 
-  /////////////////// Hijo
+  /////////////////// Hijo //////////////////////////////////
+  //////////////////////////////////////////////////////////
   onTablaSelectedHijo(event: any) {
     if (event && event.target) {
       this.tablaSeleccionadaHijo = event.target.value;
@@ -101,24 +103,35 @@ export class RelationsFormComponent implements OnInit {
     );}
 
 //////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
   onSumbit(){
     const relationsBody: RelationsCreateRequest = {
-      description:this.description,
-      form_definition_from:this.formSeleccionadaPadre,
-      table_from: this.tablaSeleccionadaPadre,
-      table_from_key: this.campoSelecionadoPadre,
-      form_definition_to: this.formSeleccionadaHijo,
-      table_to:this.tablaSeleccionadaHijo,
-      table_to_key:this.campoSelecionadoHijo,
+      description:this.description || 'string',
+      form_definition_from:this.formSeleccionadaPadre || 'string',
+      table_from: this.tablaSeleccionadaPadre || 'string',
+      table_from_key: this.campoSelecionadoPadre || 'string',
+      form_definition_to: this.formSeleccionadaHijo || 'string',
+      table_to:this.tablaSeleccionadaHijo || 'string',
+      table_to_key:this.campoSelecionadoHijo || 'string',
       editable: this.editable ? 1 : 0,
-      relation_type:this.relationalType
-      
+      relation_type:this.relationalType || 'string' 
    }
+
    this.relationService.crearRelation(relationsBody).subscribe(
     response => {
       this.realtionTableId = response.id;
+      if(relationsBody.relation_type == 'nn' || relationsBody.relation_type == 'NN'){
+        this.relationService.createTableIntermediate(this.realtionTableId).subscribe(
+          tableResponse => {
+            console.log('Tabla intermedia crada exitosamente', tableResponse);
+          }
+        )
+
+       }
     }
    )
+
+   
 
   this.tablasCreadas.push(relationsBody)
   console.log(this.tablasCreadas)
@@ -146,6 +159,7 @@ export class RelationsFormComponent implements OnInit {
       this.formSeleccionadaHijo = event.target.value;
     }
   }
+
 
 }
 
