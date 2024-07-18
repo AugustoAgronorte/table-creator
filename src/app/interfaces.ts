@@ -148,3 +148,15 @@ export interface FormDefResponse{
     extra_info: string;
   }
 
+export interface FormCreateRequest{
+    table_name:string
+}
+
+export interface ApiResponse{
+  result: boolean,
+  message: string,
+  status: number,
+  datetime: Date,
+  content_type: string,
+  content: string[]
+}

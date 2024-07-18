@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiSearchResponse, ApiSearchGroup, ApiSearchRequest, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse, ApiDefinitionInterface, ApiParametersInterface, ApiDefinitionResponse, ApiParametersResponse } from '../interfaces';
+import { ApiSearchResponse, ApiSearchGroup, ApiSearchRequest, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse, ApiDefinitionInterface, ApiParametersInterface, ApiDefinitionResponse, ApiParametersResponse, FormCreateRequest, ApiResponse } from '../interfaces';
 import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 
 
@@ -12,7 +12,7 @@ import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 })
 export class ApiService {
   
-  private apiUrl = 'http://192.168.2.109:8080';
+  private apiUrl = 'http://127.0.0.1:8000';
 
   constructor(private http: HttpClient) { }
 
@@ -40,6 +40,16 @@ export class ApiService {
     return this.http.post<ApiTableSchemaResponse>(url, requestBody, { headers: { 'Authorization': 'aa' } });
   }
 
+  actualizarGenerator(tipoGenerator:string):Observable<any> {
+    const url = `${this.apiUrl}/api-generator/${tipoGenerator}`
+    return this.http.get<any>(url);
+  }
+
+  createFormWithFields(body:FormCreateRequest): Observable<ApiResponse> {
+    const url = `${this.apiUrl}/forms/full-api-forms-table`;
+    return this.http.post<ApiResponse>(url, body, {headers:{ 'Authorization': 'aa' }})
+  }
+  
   createTableHeaders(headers: ApiTableHeadersRequest): Observable<any> {
     const url = `${this.apiUrl}/table_api_headers/create`;
     console.log('BODY',headers)

@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../service/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import {  ApiSearchResponse, ApiSearchGroup, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse} from '../../interfaces';
+import {  ApiSearchResponse, ApiSearchGroup, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse, FormCreateRequest, ApiResponse} from '../../interfaces';
 import { GeneralFormComponent } from '../general-form/general-form.component';
+import { delay, of, switchMap } from 'rxjs';
 
 
 @Component({
@@ -14,7 +15,7 @@ import { GeneralFormComponent } from '../general-form/general-form.component';
   styleUrl: './formulario.component.css'
 })
 
-export class FormularioComponent {
+export class FormularioComponent implements OnInit{
 
   api_path: string = ''; // Segmento de la URL de la API después de /api
   table_name: string = ''; // Nombre de la tabla
@@ -32,9 +33,30 @@ export class FormularioComponent {
   id_table_api_schema: number = 1;
   tableSchemaId!: number;
   showAlert:boolean = false;
+  isForm?:string;
+  isLoading:boolean = true
   
 
   constructor(private apiService: ApiService) { }
+
+  ngOnInit() {
+    this.apiService.actualizarGenerator('modelos').pipe(
+      switchMap(response => {
+        // Esperar 15 segundos antes de ejecutar el segundo servicio
+        return of(response).pipe(
+          delay(10000),
+          switchMap(() => this.apiService.actualizarGenerator('serializers'))
+        );
+      })
+    ).subscribe(
+      response => {
+        this.isLoading = false;
+      },
+      error => {
+        this.isLoading = false;
+      }
+    );
+  }
 
   onSubmit(currentPage: number) {
     this.selectedItems = []
@@ -59,6 +81,10 @@ export class FormularioComponent {
       this.fieldNames = this.responseData;
 
     }
+  }
+
+  crearForm(){
+
   }
 
   showSelectedItem(index: number) {
@@ -88,21 +114,23 @@ export class FormularioComponent {
     .join(' ');
   }
   
-  createTableSchemaAndHeaders() {
+  createTableSchemaAndHeadersAndForm() {
+    this.isLoading = true;
     const requestBody: ApiTableSchemaRequest = {
       table_key_name: this.api_table_name,
       api_path: this.api_path,
       pagination: 1,
-      editable: 1,  
-      deletable: 0  
+      editable: 1,
+      deletable: 0
     };
-  
+
+
     // Paso 1: Crear la tabla schema
     this.apiService.createTableSchema(requestBody).subscribe(
       (schemaResponse: ApiTableSchemaResponse) => {
         this.tableSchemaId = schemaResponse.id; // Guarda el ID de la tabla schema creada
         console.log('TableSchema created with ID:', this.tableSchemaId);
-  
+
         // Paso 2: Crear los headers uno por uno utilizando el ID de la tabla schema
         if (this.tableSchemaId) {
           this.selectedItems.forEach(item => {
@@ -111,7 +139,7 @@ export class FormularioComponent {
               header_key: item,
               display_name: this.capitalizeFirstLetter(item)
             };
-  
+
             this.apiService.createTableHeaders(headerRequest).subscribe(
               response => {
                 console.log(`TableApiHeader created successfully for ${item}:`, response);
@@ -124,9 +152,73 @@ export class FormularioComponent {
             );
           });
         }
+
+        this.apiService.actualizarGenerator('modelos').pipe(
+          switchMap(response => {
+            // Esperar 15 segundos antes de ejecutar el segundo servicio
+            return of(response).pipe(
+              delay(10000),
+              switchMap(() => this.apiService.actualizarGenerator('serializers'))
+            );
+          })
+        ).subscribe(
+          response => {
+            this.isLoading = false;
+          },
+          error => {
+            this.isLoading = false;
+          }
+        );
+
+
+        const RequestBodyForm: FormCreateRequest = {
+        table_name: this.api_table_name
+        }
+
+        if (this.isForm == 'Si') {
+          this.apiService.createFormWithFields(RequestBodyForm).subscribe(
+            response => {
+              console.log(`Form created successfully for:`, response);
+            }
+          )
+          this.apiService.actualizarGenerator('modelos').pipe(
+            switchMap(response => {
+              // Esperar 5 segundos antes de ejecutar el segundo servicio
+              return of(response).pipe(
+                delay(10000),
+                switchMap(() => this.apiService.actualizarGenerator('serializers'))
+              );
+            }),
+            switchMap(response => {
+              // Esperar 5 segundos antes de ejecutar el tercer servicio
+              return of(response).pipe(
+                delay(10000),
+                switchMap(() => this.apiService.actualizarGenerator('controllers'))
+              );
+            }),
+            switchMap(response => {
+              // Esperar 5 segundos antes de ejecutar el cuarto servicio
+              return of(response).pipe(
+                delay(7000),
+                switchMap(() => this.apiService.actualizarGenerator('urls'))
+              );
+            })
+          ).subscribe(
+            response => {
+              this.isLoading = false;
+            },
+            error => {
+              this.isLoading = false;
+            }
+          );
+        }
+        
       }
-    );
+    )
   }
+      
+
+  
 
   nextPage() {
     if (this.currentPage < this.totalPages) {

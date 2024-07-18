@@ -1,5 +1,9 @@
 <div class="container">
-    <div class="row bg-secondary-subtle p-4 mt-4 rounded rounded--lg d-flex mb-4">
+    <div *ngIf="this.isLoading" class="card d-flex justify-content-center align-items-center mt-4 bg-secondary">
+      <h2>GENERANDO MODELOS Y SERIALIZADORES</h2>
+      <div  class="loader"></div>
+    </div>
+    <div *ngIf="!this.isLoading" class="row bg-secondary-subtle p-4 mt-4 rounded rounded--lg d-flex mb-4">
       <h4>FORMULARIO ESPECIFICO DE CREACION DE TABLE-SCHEMA Y TABLE-HEADERS</h4>
       <hr>
 
@@ -14,15 +18,23 @@
         <form (submit)="onSubmit(currentPage)">
           <div class="form-group mb-2">
             <label for="api_table_name">Table API name</label>
-            <input type="text" class="form-control" id="api_table_name" [(ngModel)]="api_table_name" name="api_table_name" required>
+            <input type="text" class="form-control" id="api_table_name" [(ngModel)]="api_table_name" name="api_table_name" placeholder="tabla_(nombreTablaDB)" required>
           </div>
           <div class="form-group mb-2">
             <label for="table_name">DB table name</label>
-            <input type="text" class="form-control" id="table_name" [(ngModel)]="table_name" name="table_name" required>
+            <input type="text" class="form-control" id="table_name" [(ngModel)]="table_name" name="table_name" placeholder="Nombre de tabla en DB" required>
           </div>
           <div class="form-group mb-2">
             <label for="api_path">Path de la api</label>
-            <input type="text" class="form-control" id="api_path" [(ngModel)]="api_path" name="api_path" required>
+            <input type="text" class="form-control" id="api_path" [(ngModel)]="api_path" name="api_path" placeholder="/api/search/nombreTablaDB" required>
+          </div>
+          <div class="form-group mb-2">
+            <label for="isForm">¿Tendrá formulario?</label>
+            <select type="select" class="form-control" id="isForm" [(ngModel)]="isForm" name="isForm" required>
+              <option disabled selected value="">Si (crea form) - No (no crea form)</option>
+              <option value="Si">Si</option>
+              <option value="No">No</option>
+            </select>
           </div>
           <button type="submit"  class="btn btn-primary">Buscar</button>
         </form>
@@ -41,7 +53,7 @@
 
               
         </div>
-        <button class="btn btn-primary m-2 ms-0" (click)="createTableSchemaAndHeaders()">Crear</button>
+        <button class="btn btn-primary m-2 ms-0" (click)="createTableSchemaAndHeadersAndForm()">Crear</button>
       </div>
 
       <div class="col-md-2 mx-auto my-auto">
