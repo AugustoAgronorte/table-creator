@@ -35,6 +35,10 @@ export class ApiService {
 
   }
 
+  healthCheck(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/global-apis/health-check`);
+  }
+
   createTableSchema(requestBody: ApiTableSchemaRequest): Observable<ApiTableSchemaResponse> {
     const url = `${this.apiUrl}/table_api_schema/create`;
     return this.http.post<ApiTableSchemaResponse>(url, requestBody, { headers: { 'Authorization': 'aa' } });

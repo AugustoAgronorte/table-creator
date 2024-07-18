@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {  ApiSearchResponse, ApiSearchGroup, ApiTableHeadersRequest, ApiTableSchemaRequest, ApiTableSchemaResponse, FormCreateRequest, ApiResponse} from '../../interfaces';
 import { GeneralFormComponent } from '../general-form/general-form.component';
-import { delay, of, switchMap } from 'rxjs';
+import { delay, interval, of, switchMap, takeWhile } from 'rxjs';
 
 
 @Component({
@@ -15,13 +15,13 @@ import { delay, of, switchMap } from 'rxjs';
   styleUrl: './formulario.component.css'
 })
 
-export class FormularioComponent implements OnInit{
+export class FormularioComponent implements OnInit {
 
   api_path: string = ''; // Segmento de la URL de la API después de /api
   table_name: string = ''; // Nombre de la tabla
   api_table_name = ''
 
-  criteria_group:ApiSearchGroup = {
+  criteria_group = {
     logic_operator: "",
     group_list: []
   }
@@ -40,22 +40,38 @@ export class FormularioComponent implements OnInit{
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    this.apiService.actualizarGenerator('modelos').pipe(
-      switchMap(response => {
-        // Esperar 15 segundos antes de ejecutar el segundo servicio
-        return of(response).pipe(
-          delay(10000),
-          switchMap(() => this.apiService.actualizarGenerator('serializers'))
-        );
-      })
-    ).subscribe(
+    this.apiService.actualizarGenerator('modelos').subscribe(
       response => {
-        this.isLoading = false;
+        this.waitForHealthCheck(() => {
+          this.apiService.actualizarGenerator('serializers').subscribe(
+            response => {
+              this.isLoading = false;
+            },
+            error => {
+              this.isLoading = false;
+            }
+          );
+        });
       },
       error => {
         this.isLoading = false;
       }
     );
+  }
+  
+
+
+  waitForHealthCheck(callback: () => void) {
+    const intervalId = setInterval(() => {
+      this.apiService.healthCheck().subscribe(response => {
+        if (response.status === 'OK') {
+          clearInterval(intervalId);
+          callback();
+        }
+      }, error => {
+        console.error('Health check failed:', error);
+      });
+    }, 1000);
   }
 
   onSubmit(currentPage: number) {
@@ -66,11 +82,7 @@ export class FormularioComponent implements OnInit{
       currentPage,
       this.criteria_group
     ).subscribe((data: any) => {
-
       console.log(data)
-
-
-
       this.responseData = data;
       this.processData();
     });
@@ -79,13 +91,10 @@ export class FormularioComponent implements OnInit{
   processData() {
     if (this.responseData.length > 0) {
       this.fieldNames = this.responseData;
-
     }
   }
 
-  crearForm(){
-
-  }
+  crearForm(){}
 
   showSelectedItem(index: number) {
     const selectedItem = this.fieldNames[index];
@@ -94,13 +103,6 @@ export class FormularioComponent implements OnInit{
   }
 
   selectAll() {
-    // if (Object.keys(this.responseData[0])) {
-    //   Object.keys(this.responseData[0]).forEach(item => {
-    //     if (!this.selectedItems.includes(item)) {
-    //       this.selectedItems.push(item);
-    //     }
-    //   });
-    // }
     this.selectedItems = []
     this.responseData.forEach(element => {
       this.selectedItems.push(element)
@@ -109,14 +111,14 @@ export class FormularioComponent implements OnInit{
 
   capitalizeFirstLetter(text: string): string {
     return text
-    .split(/(?=[A-Z])|[_\s]/)  // Divide por mayúsculas, guiones bajos o espacios
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())  // Capitaliza la primera letra de cada palabra
+    .split(/(?=[A-Z])|[_\s]/) 
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) 
     .join(' ');
   }
   
   createTableSchemaAndHeadersAndForm() {
     this.isLoading = true;
-    const requestBody: ApiTableSchemaRequest = {
+    const requestBody = {
       table_key_name: this.api_table_name,
       api_path: this.api_path,
       pagination: 1,
@@ -124,17 +126,14 @@ export class FormularioComponent implements OnInit{
       deletable: 0
     };
 
-
-    // Paso 1: Crear la tabla schema
     this.apiService.createTableSchema(requestBody).subscribe(
-      (schemaResponse: ApiTableSchemaResponse) => {
-        this.tableSchemaId = schemaResponse.id; // Guarda el ID de la tabla schema creada
+      schemaResponse => {
+        this.tableSchemaId = schemaResponse.id;
         console.log('TableSchema created with ID:', this.tableSchemaId);
 
-        // Paso 2: Crear los headers uno por uno utilizando el ID de la tabla schema
         if (this.tableSchemaId) {
           this.selectedItems.forEach(item => {
-            const headerRequest: ApiTableHeadersRequest = {
+            const headerRequest = {
               id_table_api_schema: this.tableSchemaId,
               header_key: item,
               display_name: this.capitalizeFirstLetter(item)
@@ -143,8 +142,8 @@ export class FormularioComponent implements OnInit{
             this.apiService.createTableHeaders(headerRequest).subscribe(
               response => {
                 console.log(`TableApiHeader created successfully for ${item}:`, response);
-                this.showAlertMessage()
-                this.clearAll()
+                this.showAlertMessage();
+                this.clearAll();
               },
               error => {
                 console.error(`Error creating TableApiHeader for ${item}:`, error);
@@ -153,72 +152,73 @@ export class FormularioComponent implements OnInit{
           });
         }
 
-        this.apiService.actualizarGenerator('modelos').pipe(
-          switchMap(response => {
-            // Esperar 15 segundos antes de ejecutar el segundo servicio
-            return of(response).pipe(
-              delay(10000),
-              switchMap(() => this.apiService.actualizarGenerator('serializers'))
-            );
-          })
-        ).subscribe(
+        //////////////////////////////////////////////////////////////////////////
+        /////////////////// actualizar modelos y serializers
+        this.apiService.actualizarGenerator('modelos').subscribe(
           response => {
-            this.isLoading = false;
-          },
-          error => {
-            this.isLoading = false;
-          }
-        );
+            this.waitForHealthCheck(() => {
+              this.apiService.actualizarGenerator('serializers').subscribe(
+                response => {
+                  const RequestBodyForm = {
+                    table_name: this.table_name
+                  };
 
-
-        const RequestBodyForm: FormCreateRequest = {
-        table_name: this.api_table_name
-        }
-
-        if (this.isForm == 'Si') {
-          this.apiService.createFormWithFields(RequestBodyForm).subscribe(
-            response => {
-              console.log(`Form created successfully for:`, response);
-            }
-          )
-          this.apiService.actualizarGenerator('modelos').pipe(
-            switchMap(response => {
-              // Esperar 5 segundos antes de ejecutar el segundo servicio
-              return of(response).pipe(
-                delay(10000),
-                switchMap(() => this.apiService.actualizarGenerator('serializers'))
-              );
-            }),
-            switchMap(response => {
-              // Esperar 5 segundos antes de ejecutar el tercer servicio
-              return of(response).pipe(
-                delay(10000),
-                switchMap(() => this.apiService.actualizarGenerator('controllers'))
-              );
-            }),
-            switchMap(response => {
-              // Esperar 5 segundos antes de ejecutar el cuarto servicio
-              return of(response).pipe(
-                delay(7000),
-                switchMap(() => this.apiService.actualizarGenerator('urls'))
-              );
+                  if (this.isForm === 'Si') {
+                    this.apiService.createFormWithFields(RequestBodyForm).subscribe(
+                      response => {
+                        console.log(`Form created successfully for:`, response);
+                        this.waitForHealthCheck(() => {
+                          this.apiService.actualizarGenerator('modelos').subscribe(
+                            response => {
+                              this.waitForHealthCheck(() => {
+                                this.apiService.actualizarGenerator('serializers').subscribe(
+                                  response => {
+                                    this.waitForHealthCheck(() => {
+                                      this.apiService.actualizarGenerator('controllers').subscribe(
+                                        response => {
+                                          this.waitForHealthCheck(() => {
+                                            this.apiService.actualizarGenerator('urls').subscribe(
+                                              response => {
+                                                this.isLoading = false;
+                                              },
+                                              error => {
+                                                this.isLoading = false;
+                                              }
+                                            );
+                                          });
+                                        },
+                                        error => {
+                                          this.isLoading = false;
+                                        }
+                                      );
+                                    });
+                                  },
+                                  error => {
+                                    this.isLoading = false;
+                                  }
+                                );
+                              });
+                            },
+                            error => {
+                              this.isLoading = false;
+                            }
+                          );
+                        });
+                      },
+                      error => {
+                        this.isLoading = false;
+                      }
+                      
+                    );
+                  }
+                })
             })
-          ).subscribe(
-            response => {
-              this.isLoading = false;
-            },
-            error => {
-              this.isLoading = false;
-            }
-          );
-        }
-        
-      }
-    )
-  }
+          })
+      });
+
       
 
-  
+  }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
@@ -235,25 +235,18 @@ export class FormularioComponent implements OnInit{
   }
   
   get totalPages(): number {
-    // if (this.responseData && this.responseData.results && this.responseData.results.length > 0) {
-    //   return Math.ceil(Object.keys(this.responseData.results[0]).length / this.itemsPerPage);
-    // } else {
-    //   return 0; // Manejar el caso cuando no hay resultados o responseData no está definido
-    // }
-    return 1
+    return 1;
   }
 
   showAlertMessage() {
     this.showAlert = true;
     setTimeout(() => {
       this.showAlert = false;
-    }, 2000); // Ocultar después de 2000 milisegundos (2 segundos)
+    }, 2000);
   }
 
   clearAll(){
     this.fieldNames = [],
     this.selectedItems = []
   }
-
 }
-  
