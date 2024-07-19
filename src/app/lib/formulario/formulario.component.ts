@@ -34,30 +34,39 @@ export class FormularioComponent implements OnInit {
   tableSchemaId!: number;
   showAlert:boolean = false;
   isForm?:string;
-  isLoading:boolean = true
+  isLoading:boolean = false;
+
   
 
   constructor(private apiService: ApiService) { }
 
-  ngOnInit() {
-    this.apiService.actualizarGenerator('modelos').subscribe(
-      response => {
-        this.waitForHealthCheck(() => {
-          this.apiService.actualizarGenerator('serializers').subscribe(
-            response => {
-              this.isLoading = false;
-            },
-            error => {
-              this.isLoading = false;
-            }
-          );
-        });
-      },
-      error => {
-        this.isLoading = false;
-      }
-    );
+
+  startGeneradores(){
+    this.isLoading = true
+    if(this.isLoading)
+    {
+      this.apiService.actualizarGenerator('modelos').subscribe(
+        response => {
+          this.waitForHealthCheck(() => {
+            this.apiService.actualizarGenerator('serializers').subscribe(
+              response => {
+                this.isLoading = false;
+              },
+              error => {
+                this.isLoading = false;
+              }
+            );
+          });
+        },
+        error => {
+          this.isLoading = false;
+        }
+      );
+    }
   }
+
+  ngOnInit() {}
+  
   
 
 
