@@ -54,12 +54,14 @@ export class FormularioComponent implements OnInit {
               },
               error => {
                 this.isLoading = false;
+                console.log("Error en la generacion de serializers 2")
               }
             );
           });
         },
         error => {
           this.isLoading = false;
+          console.log("Erros en la generacion de modelos 2")
         }
       );
     }
@@ -176,7 +178,6 @@ export class FormularioComponent implements OnInit {
                     this.apiService.createFormWithFields(RequestBodyForm).subscribe(
                       response => {
                         console.log(`Form created successfully for:`, response);
-                        this.waitForHealthCheck(() => {
                           this.apiService.actualizarGenerator('modelos').subscribe(
                             response => {
                               this.waitForHealthCheck(() => {
@@ -192,30 +193,34 @@ export class FormularioComponent implements OnInit {
                                               },
                                               error => {
                                                 this.isLoading = false;
+                                                console.log("Error en la generacion de urls 1")
                                               }
                                             );
                                           });
                                         },
                                         error => {
                                           this.isLoading = false;
+                                          console.log("Error en la generacion de controladores 1")
                                         }
                                       );
                                     });
                                   },
                                   error => {
                                     this.isLoading = false;
+                                    console.log("Error en la generacion de serializers 1")
                                   }
                                 );
                               });
                             },
                             error => {
                               this.isLoading = false;
+                              console.log("Error en la generacion de modelos 1", error)
                             }
                           );
-                        });
                       },
                       error => {
                         this.isLoading = false;
+                        console.log("Error en la creacion del fomrulario y sus campos")
                       }
                       
                     );
